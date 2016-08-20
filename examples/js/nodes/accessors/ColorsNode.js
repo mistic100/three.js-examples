@@ -1,0 +1,44 @@
+(function(root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define('three.ColorsNode', ['three'], factory);
+    }
+    else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
+        module.exports = factory(require('three'));
+    }
+    else {
+        factory(root.THREE);
+    }
+}(this, function(THREE) {
+
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+THREE.ColorsNode = function( index ) {
+
+	THREE.TempNode.call( this, 'v4', { share: false } );
+
+	this.index = index || 0;
+
+};
+
+THREE.ColorsNode.vertexDict = [ 'color', 'color2' ];
+THREE.ColorsNode.fragmentDict = [ 'vColor', 'vColor2' ];
+
+THREE.ColorsNode.prototype = Object.create( THREE.TempNode.prototype );
+THREE.ColorsNode.prototype.constructor = THREE.ColorsNode;
+
+THREE.ColorsNode.prototype.generate = function( builder, output ) {
+
+	var material = builder.material;
+	var result;
+
+	material.requestAttrib.color[ this.index ] = true;
+
+	if ( builder.isShader( 'vertex' ) ) result = THREE.ColorsNode.vertexDict[ this.index ];
+	else result = THREE.ColorsNode.fragmentDict[ this.index ];
+
+	return builder.format( result, this.getType( builder ), output );
+
+};
+}));

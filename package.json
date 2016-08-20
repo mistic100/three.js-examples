@@ -1,0 +1,16 @@
+{
+  "name": "three.js-examples",
+  "version": "0.79.0",
+  "description": "JavaScript files from Three.js examples",
+  "author": "mrdoob",
+  "license": "MIT",
+  "homepage": "http://threejs.org/examples",
+  "dependencies": {
+    "three": "0.79.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-insert": "^0.5.0",
+    "parse-filepath": "^1.0.1"
+  }
+}
