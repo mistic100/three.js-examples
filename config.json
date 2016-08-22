@@ -1,0 +1,30 @@
+{
+  "globals": {
+    "geometries/hilbert2D.js": ["hilbert2D"],
+    "geometries/hilbert3D.js": ["hilbert3D"],
+    "GPUComputationRenderer.js": ["GPUComputationRenderer"],
+    "ImprovedNoise.js": ["ImprovedNoise"],
+    "PRNG.js": ["PRNG"],
+    "RollerCoaster.js": ["RollerCoasterGeometry", "RollerCoasterLiftersGeometry", "RollerCoasterShadowGeometry", "SkyGeometry", "TreesGeometry"],
+    "SimplexNoise.js": ["SimplexNoise"],
+    "WEBVR.js": ["WEBVR"]
+  },
+  "noUMD": [
+    "loaders/ctm/CTMWorker.js",
+    "renderers/RaytracingWorker.js",
+    "Cloth.js",
+    "Detector.js"
+  ],
+  "ignore": [
+    "crossfade/**",
+    "libs/**",
+    "loaders/ctm/ctm.js",
+    "loaders/ctm/lzma.js",
+    "loaders/gltf/glTF-parser.js",
+    "loaders/gltf/gltfUtilities.js",
+    "loaders/sea3d/SEA3D.js",
+    "loaders/sea3d/SEA3DDeflate.js",
+    "loaders/sea3d/SEA3DLZMA.js",
+    "BlendCharcaterGui.js"
+  ]
+}

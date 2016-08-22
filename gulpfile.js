@@ -3,6 +3,7 @@
 const gulp = require('gulp');
 const insert = require('gulp-insert');
 const parsePath = require('parse-filepath');
+const config = require('./config.json');
 
 const THREE_PATH = 'node_modules/three';
 
@@ -17,8 +18,14 @@ gulp.task('default', () => {
     /**
      * Copy examples JS files & add UMD loader
      */
-    gulp.src(`${THREE_PATH}/examples/js/**/*.js`)
+    gulp.src([`${THREE_PATH}/examples/js/**/*.js`].concat(
+        config.ignore.map(ignore => `!${THREE_PATH}/examples/js/${ignore}`)
+    ))
         .pipe(insert.prepend(file => {
+            if (config.noUMD.some(excludePath => file.path.indexOf(excludePath) !== -1)) {
+                return '';
+            }
+
             let filename = parsePath(file.path).stem;
             return `(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -34,6 +41,19 @@ gulp.task('default', () => {
 
 `;
         }))
-        .pipe(insert.append(`}));`))
+        .pipe(insert.append(file => {
+            let append = '';
+
+            for (let globalsPath in config.globals) {
+                if (file.path.indexOf(globalsPath) !== -1) {
+                    config.globals[globalsPath].forEach(global => {
+                       append+= `\nTHREE.${global} = ${global};`;
+                    });
+                }
+            }
+
+            append+= `\n}));`;
+            return append;
+        }))
         .pipe(gulp.dest('examples/js'));
 });
