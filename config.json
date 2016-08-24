@@ -7,7 +7,7 @@
     "PRNG.js": ["PRNG"],
     "RollerCoaster.js": ["RollerCoasterGeometry", "RollerCoasterLiftersGeometry", "RollerCoasterShadowGeometry", "SkyGeometry", "TreesGeometry"],
     "SimplexNoise.js": ["SimplexNoise"],
-    "WEBVR.js": ["WEBVR"]
+    "WebVR.js": ["WEBVR"]
   },
   "noUMD": [
     "loaders/ctm/CTMWorker.js",
@@ -25,6 +25,6 @@
     "loaders/sea3d/SEA3D.js",
     "loaders/sea3d/SEA3DDeflate.js",
     "loaders/sea3d/SEA3DLZMA.js",
-    "BlendCharcaterGui.js"
+    "BlendCharacterGui.js"
   ]
 }

@@ -1,15 +1,3 @@
-(function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define('three.Detector', ['three'], factory);
-    }
-    else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-        module.exports = factory(require('three'));
-    }
-    else {
-        factory(root.THREE);
-    }
-}(this, function(THREE) {
-
 /**
  * @author alteredq / http://alteredqualia.com/
  * @author mr.doob / http://mrdoob.com/
@@ -88,4 +76,3 @@ if ( typeof module === 'object' ) {
 	module.exports = Detector;
 
 }
-}));

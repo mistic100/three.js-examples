@@ -1,15 +1,3 @@
-(function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define('three.Cloth', ['three'], factory);
-    }
-    else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-        module.exports = factory(require('three'));
-    }
-    else {
-        factory(root.THREE);
-    }
-}(this, function(THREE) {
-
 /*
  * Cloth Simulation using a relaxed constrains solver
  */
@@ -340,4 +328,3 @@ function simulate( time ) {
 
 
 }
-}));

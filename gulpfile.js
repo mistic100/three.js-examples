@@ -3,6 +3,7 @@
 const gulp = require('gulp');
 const insert = require('gulp-insert');
 const parsePath = require('parse-filepath');
+const _ = require('lodash');
 const config = require('./config.json');
 
 const THREE_PATH = 'node_modules/three';
@@ -19,17 +20,16 @@ gulp.task('default', () => {
      * Copy examples JS files & add UMD loader
      */
     gulp.src([`${THREE_PATH}/examples/js/**/*.js`].concat(
-        config.ignore.map(ignore => `!${THREE_PATH}/examples/js/${ignore}`)
+        _.map(config.ignore, map => `!${THREE_PATH}/examples/js/${map}`)
     ))
         .pipe(insert.prepend(file => {
-            if (config.noUMD.some(excludePath => file.path.indexOf(excludePath) !== -1)) {
+            if (_.some(config.noUMD, path => file.path.includes(path))) {
                 return '';
             }
 
-            let filename = parsePath(file.path).stem;
             return `(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define('three.${filename}', ['three'], factory);
+        define('three.${parsePath(file.path).stem}', ['three'], factory);
     }
     else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
         module.exports = factory(require('three'));
@@ -42,18 +42,18 @@ gulp.task('default', () => {
 `;
         }))
         .pipe(insert.append(file => {
-            let append = '';
-
-            for (let globalsPath in config.globals) {
-                if (file.path.indexOf(globalsPath) !== -1) {
-                    config.globals[globalsPath].forEach(global => {
-                       append+= `\nTHREE.${global} = ${global};`;
-                    });
-                }
+            return _(config.globals)
+                .filter((vars, path) => file.path.includes(path))
+                .flatten()
+                .map(global => `THREE.${global} = ${global};`)
+                .join(`\n`);
+        }))
+        .pipe(insert.append(file => {
+            if (_.some(config.noUMD, path => file.path.includes(path))) {
+                return '';
             }
 
-            append+= `\n}));`;
-            return append;
+            return `}));`;
         }))
         .pipe(gulp.dest('examples/js'));
 });

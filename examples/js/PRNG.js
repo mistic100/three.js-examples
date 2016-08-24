@@ -33,4 +33,4 @@ var PRNG = function () {
 	};
 
 };
-}));
+THREE.PRNG = PRNG;}));

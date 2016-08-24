@@ -1,15 +1,3 @@
-(function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define('three.RaytracingWorker', ['three'], factory);
-    }
-    else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-        module.exports = factory(require('three'));
-    }
-    else {
-        factory(root.THREE);
-    }
-}(this, function(THREE) {
-
 var worker;
 var BLOCK = 128;
 var startX, startY, division, completed = 0;
@@ -577,4 +565,3 @@ THREE.RaytracingRendererWorker = function ( parameters ) {
 };
 
 Object.assign( THREE.RaytracingRendererWorker.prototype, THREE.EventDispatcher.prototype );
-}));

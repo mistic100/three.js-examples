@@ -379,4 +379,4 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 
 	}
 
-}}));
+}THREE.GPUComputationRenderer = GPUComputationRenderer;}));

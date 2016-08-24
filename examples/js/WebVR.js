@@ -115,4 +115,4 @@ var WEBVR = {
 	}
 
 };
-}));
+THREE.WEBVR = WEBVR;}));

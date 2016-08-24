@@ -73,4 +73,4 @@ function hilbert2D ( center, size, iterations, v0, v1, v2, v3 ) {
 	return vec;
 
 }
-}));
+THREE.hilbert2D = hilbert2D;}));

@@ -554,4 +554,8 @@ var TreesGeometry = function ( landscape ) {
 };
 
 TreesGeometry.prototype = Object.create( THREE.BufferGeometry.prototype );
-}));
+THREE.RollerCoasterGeometry = RollerCoasterGeometry;
+THREE.RollerCoasterLiftersGeometry = RollerCoasterLiftersGeometry;
+THREE.RollerCoasterShadowGeometry = RollerCoasterShadowGeometry;
+THREE.SkyGeometry = SkyGeometry;
+THREE.TreesGeometry = TreesGeometry;}));
