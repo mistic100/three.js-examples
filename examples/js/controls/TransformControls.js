@@ -1125,7 +1125,7 @@
 
 			_dragging = false;
 
-			if ( event instanceof TouchEvent ) {
+			if ( 'TouchEvent' in window && event instanceof TouchEvent ) {
 
 				// Force "rollover"
 
