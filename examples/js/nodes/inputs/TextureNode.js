@@ -16,7 +16,7 @@
 
 THREE.TextureNode = function( value, coord, bias, project ) {
 
-	THREE.InputNode.call( this, 'v4' );
+	THREE.InputNode.call( this, 'v4', { shared : true } );
 
 	this.value = value;
 	this.coord = coord || new THREE.UVNode();
@@ -36,6 +36,12 @@ THREE.TextureNode.prototype.getTexture = function( builder, output ) {
 
 THREE.TextureNode.prototype.generate = function( builder, output ) {
 
+	if ( output === 'sampler2D' ) {
+
+		return this.getTexture( builder, output );
+
+	}
+
 	var tex = this.getTexture( builder, output );
 	var coord = this.coord.build( builder, this.project ? 'v4' : 'v2' );
 	var bias = this.bias ? this.bias.build( builder, 'fv1' ) : undefined;
@@ -53,6 +59,20 @@ THREE.TextureNode.prototype.generate = function( builder, output ) {
 
 	if ( bias ) code = method + '(' + tex + ',' + coord + ',' + bias + ')';
 	else code = method + '(' + tex + ',' + coord + ')';
+
+	if ( builder.isSlot( 'color' ) ) {
+
+		code = 'mapTexelToLinear(' + code + ')';
+
+	} else if ( builder.isSlot( 'emissive' ) ) {
+
+		code = 'emissiveMapTexelToLinear(' + code + ')';
+
+	} else if ( builder.isSlot( 'environment' ) ) {
+
+		code = 'envMapTexelToLinear(' + code + ')';
+
+	}
 
 	return builder.format( code, this.type, output );
 

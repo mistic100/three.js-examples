@@ -16,6 +16,9 @@
 
 THREE.InputNode = function( type, params ) {
 
+	params = params || {};
+	params.shared = params.shared !== undefined ? params.shared : false;
+
 	THREE.TempNode.call( this, type, params );
 
 };
@@ -42,8 +45,7 @@ THREE.InputNode.prototype.generate = function( builder, output, uuid, type, ns, 
 
 		return builder.format( data.vertex.name, type, output );
 
-	}
-	else {
+	} else {
 
 		if ( ! data.fragment ) {
 

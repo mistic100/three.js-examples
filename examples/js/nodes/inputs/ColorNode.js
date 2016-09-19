@@ -16,7 +16,7 @@
 
 THREE.ColorNode = function( color ) {
 
-	THREE.InputNode.call( this, 'c', { share: false } );
+	THREE.InputNode.call( this, 'c' );
 
 	this.value = new THREE.Color( color || 0 );
 

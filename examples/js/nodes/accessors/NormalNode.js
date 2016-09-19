@@ -49,7 +49,7 @@ THREE.NormalNode.prototype.generate = function( builder, output ) {
 
 		case THREE.NormalNode.LOCAL:
 
-			material.requestAttrib.normal = true;
+			material.requestAttribs.normal = true;
 
 			if ( builder.isShader( 'vertex' ) ) result = 'normal';
 			else result = 'vObjectNormal';
@@ -58,7 +58,7 @@ THREE.NormalNode.prototype.generate = function( builder, output ) {
 
 		case THREE.NormalNode.WORLD:
 
-			material.requestAttrib.worldNormal = true;
+			material.requestAttribs.worldNormal = true;
 
 			if ( builder.isShader( 'vertex' ) ) result = '( modelMatrix * vec4( objectNormal, 0.0 ) ).xyz';
 			else result = 'vWNormal';

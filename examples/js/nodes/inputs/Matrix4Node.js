@@ -16,7 +16,7 @@
 
 THREE.Matrix4Node = function( matrix ) {
 
-	THREE.InputNode.call( this, 'm4', { share: false } );
+	THREE.InputNode.call( this, 'm4' );
 
 	this.value = matrix || new THREE.Matrix4();
 
