@@ -8,6 +8,10 @@ const config = require('./config.json');
 
 const THREE_PATH = 'node_modules/three';
 
+function normalize(path) {
+    return path.replace(/\\/g, '/');
+}
+
 gulp.task('default', () => {
 
     /**
@@ -23,7 +27,7 @@ gulp.task('default', () => {
         _.map(config.ignore, map => `!${THREE_PATH}/examples/js/${map}`)
     ))
         .pipe(insert.prepend(file => {
-            if (_.some(config.noUMD, path => file.path.includes(path))) {
+            if (_.some(config.noUMD, path => normalize(file.path).includes(path))) {
                 return '';
             }
 
@@ -43,13 +47,13 @@ gulp.task('default', () => {
         }))
         .pipe(insert.append(file => {
             return _(config.globals)
-                .filter((vars, path) => file.path.includes(path))
+                .filter((vars, path) => normalize(file.path).includes(path))
                 .flatten()
                 .map(global => `THREE.${global} = ${global};`)
                 .join(`\n`);
         }))
         .pipe(insert.append(file => {
-            if (_.some(config.noUMD, path => file.path.includes(path))) {
+            if (_.some(config.noUMD, path => normalize(file.path).includes(path))) {
                 return '';
             }
 

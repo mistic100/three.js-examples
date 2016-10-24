@@ -24,8 +24,11 @@ THREE.VRControls = function ( object, onError ) {
 	var standingMatrix = new THREE.Matrix4();
 
 	var frameData = null;
+
 	if ( 'VRFrameData' in window ) {
+
 		frameData = new VRFrameData();
+
 	}
 
 	function gotVRDisplays( displays ) {
@@ -46,7 +49,11 @@ THREE.VRControls = function ( object, onError ) {
 
 	if ( navigator.getVRDisplays ) {
 
-		navigator.getVRDisplays().then( gotVRDisplays );
+		navigator.getVRDisplays().then( gotVRDisplays ).catch ( function () {
+
+			console.warn( 'THREE.VRControls: Unable to get VR Displays' );
+
+		} );
 
 	}
 
@@ -70,8 +77,15 @@ THREE.VRControls = function ( object, onError ) {
 
 	};
 
+	this.setVRDisplay = function ( value ) {
+
+		vrDisplay = value;
+
+	};
+
 	this.getVRDisplays = function () {
 
+		console.warn( 'THREE.VRControls: getVRDisplays() is being deprecated.' );
 		return vrDisplays;
 
 	};
