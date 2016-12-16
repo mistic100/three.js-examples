@@ -86,7 +86,7 @@ THREE.RaytracingRenderer = function ( parameters ) {
 
 				}
 
-			}
+			};
 
 			worker.color = new THREE.Color().setHSL( Math.random() , 0.8, 0.8 ).getHexString();
 			pool.push( worker );
@@ -207,7 +207,7 @@ THREE.RaytracingRenderer = function ( parameters ) {
 		mirror: 1,
 		reflectivity: 1,
 		refractionRatio: 1,
-		glass: 1,
+		glass: 1
 
 	};
 

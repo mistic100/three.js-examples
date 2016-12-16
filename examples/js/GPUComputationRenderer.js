@@ -270,7 +270,7 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 
 		materialShader.defines.resolution = 'vec2( ' + sizeX.toFixed( 1 ) + ', ' + sizeY.toFixed( 1 ) + " )";
 
-	};
+	}
 	this.addResolutionDefine = addResolutionDefine;
 
 
@@ -289,7 +289,7 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 		addResolutionDefine( material );
 
 		return material;
-	};
+	}
 	this.createShaderMaterial = createShaderMaterial;
 
 	this.createRenderTarget = function( sizeXTexture, sizeYTexture, wrapS, wrapT, minFilter, magFilter ) {
@@ -379,4 +379,5 @@ function GPUComputationRenderer( sizeX, sizeY, renderer ) {
 
 	}
 
-}THREE.GPUComputationRenderer = GPUComputationRenderer;}));
+}
+THREE.GPUComputationRenderer = GPUComputationRenderer;}));

@@ -30,7 +30,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 	var context = canvas.getContext( '2d', {
 		alpha: parameters.alpha === true
 	} );
-	
+
 	var alpha = parameters.alpha;
 
 	var shaders = {};
@@ -93,7 +93,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 	this.setClearColor = function ( color, alpha ) {
 
 		clearColor.set( color );
-		cleanColorBuffer();
+		clearColorBuffer( clearColor );
 
 	};
 
@@ -143,7 +143,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 
 		}
 
-		cleanColorBuffer();
+		clearColorBuffer( clearColor );
 
 	};
 
@@ -168,10 +168,19 @@ THREE.SoftwareRenderer = function ( parameters ) {
 
 	};
 
-    // TODO: Check why autoClear can't be false.
+
 	this.render = function ( scene, camera ) {
 
-		if ( this.autoClear === true ) this.clear();
+		// TODO: Check why autoClear can't be false.
+		this.clear();
+
+		var background = scene.background;
+
+		if ( background && background.isColor ) {
+
+			clearColorBuffer( background );
+
+		}
 
 		var renderData = projector.projectScene( scene, camera, false, false );
 		var elements = renderData.elements;
@@ -374,23 +383,24 @@ THREE.SoftwareRenderer = function ( parameters ) {
 
 		}
 
-		cleanColorBuffer();
+		clearColorBuffer( clearColor );
+
 	}
 
-	function cleanColorBuffer() {
+	function clearColorBuffer( color ) {
 
 		var size = canvasWidth * canvasHeight * 4;
 
 		for ( var i = 0; i < size; i += 4 ) {
 
-			data[ i ] = clearColor.r * 255 | 0;
-			data[ i + 1 ] = clearColor.g * 255 | 0;
-			data[ i + 2 ] = clearColor.b * 255 | 0;
+			data[ i ] = color.r * 255 | 0;
+			data[ i + 1 ] = color.g * 255 | 0;
+			data[ i + 2 ] = color.b * 255 | 0;
 			data[ i + 3 ] = alpha ? 0 : 255;
 
 		}
 
-		context.fillStyle = alpha ? "rgba(0, 0, 0, 0)" : clearColor.getStyle();
+		context.fillStyle = alpha ? "rgba(0, 0, 0, 0)" : color.getStyle();
 		context.fillRect( 0, 0, canvasWidth, canvasHeight );
 
 	}
@@ -473,7 +483,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 			var destR = buffer[ colorOffset ];
 			var destG = buffer[ colorOffset + 1 ];
 			var destB = buffer[ colorOffset + 2 ];
-	
+
 			buffer[ colorOffset ] = ( srcR * opaci + destR * ( 1 - opaci ) );
 			buffer[ colorOffset + 1 ] = ( srcG * opaci + destG * ( 1 - opaci ) );
 			buffer[ colorOffset + 2 ] = ( srcB * opaci + destB * ( 1 - opaci ) );
@@ -719,7 +729,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 			Math.sqrt( (x3 - x1)*(x3 - x1) + (y3 - y1)*(y3 - y1) )
 		);
 
-		if( !(face instanceof THREE.RenderableSprite) 
+		if( !(face instanceof THREE.RenderableSprite)
 			&& (longestSide > 100 * fixscale) ) {
 
 			// 1
@@ -730,7 +740,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 			// |b\|d\
 			// |__\__\
 			// 2      3
-			var tempFace = { vertexNormalsModel : [], 
+			var tempFace = { vertexNormalsModel : [],
 						color : face.color };
 			var mpUV12, mpUV23, mpUV31;
 			if ( bHasUV ) {
@@ -748,7 +758,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 					++mpUVPoolCount;
 				} else {
 					mpUV12 = mpUVPool[ mpUVPoolCount ];
-					++mpUVPoolCount;				
+					++mpUVPoolCount;
 					mpUV23 = mpUVPool[ mpUVPoolCount ];
 					++mpUVPoolCount;
 					mpUV31 = mpUVPool[ mpUVPoolCount ];
@@ -764,7 +774,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 				weight = (1 + v1.z) * (v1.w / v3.w) / (1 + v3.z);
 				mpUV31.copy( uv3 ).multiplyScalar( weight ).add( uv1 ).multiplyScalar( 1 / (weight + 1) );
 			}
-			
+
 			var mpV12, mpV23, mpV31;
 			if ( mpVPoolCount === mpVPool.length ) {
 				mpV12 = new THREE.Vector4();
@@ -780,7 +790,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 				++mpVPoolCount;
 			} else {
 				mpV12 = mpVPool[ mpVPoolCount ];
-				++mpVPoolCount;				
+				++mpVPoolCount;
 				mpV23 = mpVPool[ mpVPoolCount ];
 				++mpVPoolCount;
 				mpV31 = mpVPool[ mpVPoolCount ];
@@ -807,7 +817,7 @@ THREE.SoftwareRenderer = function ( parameters ) {
 					++mpNPoolCount;
 				} else {
 					mpN12 = mpNPool[ mpNPoolCount ];
-					++mpNPoolCount;				
+					++mpNPoolCount;
 					mpN23 = mpNPool[ mpNPoolCount ];
 					++mpNPoolCount;
 					mpN31 = mpNPool[ mpNPoolCount ];

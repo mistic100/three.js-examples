@@ -79,7 +79,7 @@ THREE.NodeBuilder.prototype = {
 	addSlot : function( name ) {
 
 		this.slots.push( {
-			name : name || '',
+			name : name || ''
 		} );
 
 		return this.update();

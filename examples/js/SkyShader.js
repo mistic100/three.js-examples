@@ -110,7 +110,7 @@ THREE.ShaderLib[ 'sky' ] = {
 			// mie coefficients
 			"vBetaM = totalMie(lambda, turbidity) * mieCoefficient;",
 
-		"}",
+		"}"
 
 	].join( "\n" ),
 
@@ -213,7 +213,7 @@ THREE.ShaderLib[ 'sky' ] = {
 			"gl_FragColor.rgb = retColor;",
 
 			"gl_FragColor.a = 1.0;",
-		"}",
+		"}"
 
 	].join( "\n" )
 

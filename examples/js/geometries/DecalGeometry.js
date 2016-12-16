@@ -100,7 +100,7 @@ THREE.DecalGeometry = function( mesh, position, rotation, dimensions, check ) {
 				}
 				case 1: {
 
-					var nV1, nV2, nV3;
+					var nV1, nV2, nV3, nV4;
 					if ( v1Out ) {
 
 						nV1 = inVertices[ j + 1 ];

@@ -23,7 +23,7 @@ THREE.ConvolutionShader = {
 	defines: {
 
 		"KERNEL_SIZE_FLOAT": "25.0",
-		"KERNEL_SIZE_INT": "25",
+		"KERNEL_SIZE_INT": "25"
 
 	},
 

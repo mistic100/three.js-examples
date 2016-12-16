@@ -21,7 +21,7 @@ THREE.GammaCorrectionShader = {
 
 	uniforms: {
 
-		"tDiffuse": { value: null },
+		"tDiffuse": { value: null }
 
 	},
 
