@@ -959,12 +959,6 @@ THREE.MMDLoader.prototype.createMesh = function ( model, texturePath, onProgress
 				t.wrapS = THREE.RepeatWrapping;
 				t.wrapT = THREE.RepeatWrapping;
 
-				if ( params.sphericalReflectionMapping === true ) {
-
-					t.mapping = THREE.SphericalReflectionMapping;
-
-				}
-
 				for ( var i = 0; i < texture.readyCallbacks.length; i++ ) {
 
 					texture.readyCallbacks[ i ]( texture );
@@ -974,6 +968,12 @@ THREE.MMDLoader.prototype.createMesh = function ( model, texturePath, onProgress
 				delete texture.readyCallbacks;
 
 			}, onProgress, onError );
+
+			if ( params.sphericalReflectionMapping === true ) {
+
+				texture.mapping = THREE.SphericalReflectionMapping;
+
+			}
 
 			texture.readyCallbacks = [];
 
@@ -1270,13 +1270,6 @@ THREE.MMDLoader.prototype.createMesh = function ( model, texturePath, onProgress
 				m.envMap = getTexture( p.envMap, textures );
 				m.combine = p.envMapType;
 
-				// TODO: WebGLRenderer should automatically update?
-				m.envMap.readyCallbacks.push( function ( t ) {
-
-					m.needsUpdate = true;
-
-				} );
-
 			}
 
 			m.opacity = p.opacity;
@@ -1496,7 +1489,7 @@ THREE.MMDLoader.prototype.createMesh = function ( model, texturePath, onProgress
 
 	var initGeometry = function () {
 
-		geometry.setIndex( new ( buffer.indices.length > 65535 ? THREE.Uint32BufferAttribute : THREE.Uint16BufferAttribute )( buffer.indices, 1 ) );
+		geometry.setIndex( buffer.indices );
 		geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( buffer.vertices, 3 ) );
 		geometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( buffer.normals, 3 ) );
 		geometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( buffer.uvs, 2 ) );
