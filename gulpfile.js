@@ -1,28 +1,34 @@
 'use strict';
 
+const path = require('path');
+const fs = require('fs');
 const gulp = require('gulp');
 const insert = require('gulp-insert');
+const filter = require('gulp-filter');
+const clean = require('gulp-clean');
 const parsePath = require('parse-filepath');
 const _ = require('lodash');
+
 const config = require('./config.json');
 
 const THREE_PATH = 'node_modules/three';
 
-function normalize(path) {
-    return path.replace(/\\/g, '/');
-}
-
-gulp.task('default', () => {
-
-    /**
-     * Copy license file
-     */
+/**
+ * Copy license file
+ */
+gulp.task('licence', () => {
     gulp.src(`${THREE_PATH}/LICENSE`)
         .pipe(gulp.dest('.'));
+});
 
-    /**
-     * Copy examples JS files & add UMD loader
-     */
+/**
+ * Copy examples JS files & add UMD loader
+ */
+gulp.task('build', () => {
+    function normalize(path) {
+        return path.replace(/\\/g, '/');
+    }
+
     gulp.src([`${THREE_PATH}/examples/js/**/*.js`].concat(
         _.map(config.ignore, map => `!${THREE_PATH}/examples/js/${map}`)
     ))
@@ -61,3 +67,17 @@ gulp.task('default', () => {
         }))
         .pipe(gulp.dest('examples/js'));
 });
+
+/**
+ * Remove old files
+ */
+gulp.task('clean', () => {
+    gulp.src('examples/js/**/*.js', { read: false })
+        .pipe(filter(file => {
+            var filePath = path.relative(__dirname, file.path);
+            return !fs.existsSync(`${THREE_PATH}/${filePath}`);
+        }))
+        .pipe(clean());
+});
+
+gulp.task('default', ['licence', 'build', 'clean']);
