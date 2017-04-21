@@ -18,14 +18,13 @@
   "ignore": [
     "crossfade/**",
     "libs/**",
+    "loaders/draco_decoder.js",
     "loaders/ctm/ctm.js",
     "loaders/ctm/lzma.js",
-    "loaders/deprecated/**",
     "loaders/sea3d/SEA3D.js",
     "loaders/sea3d/SEA3DDeflate.js",
     "loaders/sea3d/SEA3DLZMA.js",
-    "loaders/sea3d/physics/SEA3DAmmo.js",
-    "loaders/sea3d/physics/SEA3DRigidBody.js",
-    "BlendCharacterGui.js"
+    "loaders/sea3d/o3dgc/SEA3DGC.js",
+    "loaders/sea3d/physics/**"
   ]
 }

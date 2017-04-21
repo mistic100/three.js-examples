@@ -79,8 +79,7 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 	var _lightPrePass = false;
 	var _cacheKeepAlive = false;
 
-	var _invisibleMaterial = new THREE.ShaderMaterial( { visible: false } );
-
+	var _tmpMaterial = new THREE.ShaderMaterial( { visible: false } );
 	var _tmpVector3 = new THREE.Vector3();
 
 	// scene/material/light cache for deferred rendering.
@@ -92,13 +91,12 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 	var _lightScenesCache = {};
 	var _lightFullscreenScenesCache = {};
 
-	// originalMaterial.uuid -> deferredMaterial
-	// (no mapping from children of MultiMaterial)
+	// object.material.uuid -> deferredMaterial or
+	// object.material[ n ].uuid -> deferredMaterial
 	var _normalDepthMaterialsCache = {};
 	var _normalDepthShininessMaterialsCache = {};
 	var _colorMaterialsCache = {};
 	var _reconstructionMaterialsCache = {};
-	var _invisibleMultiMaterialsCache = {};
 
 	// originalLight.uuid -> deferredLight
 	var _deferredLightsCache = {};
@@ -109,14 +107,19 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	var _removeThresholdCount = 60;
 
-	// object.uuid -> originalMaterial
-	// deferred materials.uuid -> originalMaterial
+	// deferredMaterials.uuid -> object.material or
+	// deferredMaterials.uuid -> object.material[ n ]
 	// save before render and release after render.
 	var _originalMaterialsTable = {};
 
 	// object.uuid -> originalOnBeforeRender
 	// save before render and release after render.
 	var _originalOnBeforeRendersTable = {};
+
+	// object.material.uuid -> object.material.visible or
+	// object.material[ i ].uuid -> object.material[ i ].visible or
+	// save before render and release after render.
+	var _originalVisibleTable = {};
 
 	// external properties
 
@@ -340,70 +343,73 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	}
 
-	function getMaterialFromCacheOrCreate( originalMaterial, cache, func ) {
+	function getMaterialFromCacheOrCreate( originalMaterial, cache, createFunc, updateFunc ) {
 
 		var data = cache[ originalMaterial.uuid ];
 
 		if ( data === undefined ) {
 
 			data = createCacheData();
-
-			var material;
-
-			if ( originalMaterial.isMultiMaterial === true ) {
-
-				var materials = [];
-
-				for ( var i = 0, il = originalMaterial.materials.length; i < il; i ++ ) {
-
-					materials.push( func( originalMaterial.materials[ i ] ) );
-
-				}
-
-				material = new THREE.MultiMaterial( materials );
-
-			} else {
-
-				material = func( originalMaterial );
-
-			}
-
-			data.material = material;
-
+			data.material = createFunc( originalMaterial );
 			cache[ originalMaterial.uuid ] = data;
 
 		}
+
+		data.used = true;
+
+		updateFunc( data.material, originalMaterial );
+
+		_originalMaterialsTable[ data.material.uuid ] = originalMaterial;
 
 		return data.material;
 
 	}
 
-	function setMaterialNormalDepth( object ) {
+	function overrideMaterialAndOnBeforeRender( object, getMaterialFunc, onBeforeRender ) {
 
 		if ( object.material === undefined ) return;
 
-		var originalMaterial = _originalMaterialsTable[ object.uuid ];
-		var material = getNormalDepthMaterial( originalMaterial );
+		if ( Array.isArray( object.material ) ) {
 
-		_originalMaterialsTable[ material.uuid ] = originalMaterial;
+			for ( var i = 0, il = object.material.length; i < il; i ++ ) {
 
-		if ( material.isMultiMaterial === true ) {
-
-			for ( var i = 0, il = material.materials.length; i < il; i ++ ) {
-
-				_originalMaterialsTable[ material.materials[ i ].uuid ] = originalMaterial.materials[ i ];
-				updateDeferredNormalDepthMaterial( material.materials[ i ], originalMaterial.materials[ i ] );
+				object.material[ i ] = getMaterialFunc( object.material[ i ] );
 
 			}
 
 		} else {
 
-			updateDeferredNormalDepthMaterial( material, originalMaterial );
+			object.material = getMaterialFunc( object.material );
 
 		}
 
-		object.material = material;
-		object.onBeforeRender = updateDeferredNormalDepthUniforms;
+		object.onBeforeRender = onBeforeRender;
+
+	}
+
+	function restoreOriginalMaterial( object ) {
+
+		if ( object.material === undefined ) return;
+
+		if ( Array.isArray( object.material ) ) {
+
+			for ( var i = 0, il = object.material.length; i < il; i ++ ) {
+
+				object.material[ i ] = _originalMaterialsTable[ object.material[ i ].uuid ];
+
+			}
+
+		} else {
+
+			object.material = _originalMaterialsTable[ object.material.uuid ];
+
+		}
+
+	}
+
+	function setMaterialNormalDepth( object ) {
+
+		overrideMaterialAndOnBeforeRender( object, getNormalDepthMaterial, updateDeferredNormalDepthUniforms );
 
 	}
 
@@ -412,7 +418,8 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 		return getMaterialFromCacheOrCreate(
 			originalMaterial,
 			( _lightPrePass ) ? _normalDepthShininessMaterialsCache : _normalDepthMaterialsCache,
-			createDeferredNormalDepthMaterial
+			createDeferredNormalDepthMaterial,
+			updateDeferredNormalDepthMaterial
 		);
 
 	}
@@ -461,30 +468,7 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	function setMaterialColor( object ) {
 
-		if ( object.material === undefined ) return;
-
-		var originalMaterial = _originalMaterialsTable[ object.uuid ];
-		var material = getColorMaterial( originalMaterial );
-
-		_originalMaterialsTable[ material.uuid ] = originalMaterial;
-
-		if ( originalMaterial.isMultiMaterial === true ) {
-
-			for ( var i = 0, il = originalMaterial.materials.length; i < il; i ++ ) {
-
-				_originalMaterialsTable[ material.materials[ i ].uuid ] = originalMaterial.materials[ i ];
-				updateDeferredColorMaterial( material.materials[ i ], originalMaterial.materials[ i ] );
-
-			}
-
-		} else {
-
-			updateDeferredColorMaterial( material, originalMaterial );
-
-		}
-
-		object.material = material;
-		object.onBeforeRender = updateDeferredColorUniforms;
+		overrideMaterialAndOnBeforeRender( object, getColorMaterial, updateDeferredColorUniforms );
 
 	}
 
@@ -493,7 +477,8 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 		return getMaterialFromCacheOrCreate(
 			originalMaterial,
 			_colorMaterialsCache,
-			createDeferredColorMaterial
+			createDeferredColorMaterial,
+			updateDeferredColorMaterial
 		);
 
 	}
@@ -565,48 +550,24 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	function setMaterialReconstruction( object ) {
 
-		if ( object.material === undefined ) return;
-
-		var originalMaterial = _originalMaterialsTable[ object.uuid ];
-
-		if ( originalMaterial.transparent === true ) {
-
-			object.material = originalMaterial;
-			object.onBeforeRender = _originalOnBeforeRendersTable[ object.uuid ];
-
-			return;
-
-		}
-
-		var material = getReconstructionMaterial( originalMaterial );
-		_originalMaterialsTable[ material.uuid ] = originalMaterial;
-
-		if ( originalMaterial.isMultiMaterial === true ) {
-
-			for ( var i = 0, il = originalMaterial.materials.length; i < il; i ++ ) {
-
-				_originalMaterialsTable[ material.materials[ i ].uuid ] = originalMaterial.materials[ i ];
-				updateDeferredReconstructionMaterial( material.materials[ i ], originalMaterial.materials[ i ] );
-
-			}
-
-		} else {
-
-			updateDeferredReconstructionMaterial( material, originalMaterial );
-
-		}
-
-		object.material = material;
-		object.onBeforeRender = updateDeferredReconstructionUniforms;
+		overrideMaterialAndOnBeforeRender( object, getReconstructionMaterial, updateDeferredReconstructionUniforms );
 
 	}
 
 	function getReconstructionMaterial( originalMaterial ) {
 
+		if ( originalMaterial.transparent === true ) {
+
+			_originalMaterialsTable[ originalMaterial.uuid ] = originalMaterial;
+			return originalMaterial;
+
+		}
+
 		return getMaterialFromCacheOrCreate(
 			originalMaterial,
 			_reconstructionMaterialsCache,
-			createDeferredReconstructionMaterial
+			createDeferredReconstructionMaterial,
+			updateDeferredReconstructionMaterial
 		);
 
 	}
@@ -636,65 +597,72 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	function updateDeferredReconstructionUniforms( renderer, scene, camera, geometry, material, group ) {
 
+		if ( material.transparent === true ) {
+
+			// 'this' is object here because this method is set as object.onBefore()
+			var onBeforeRender = _originalOnBeforeRendersTable[ this.uuid ];
+
+			if ( onBeforeRender ) {
+
+				onBeforeRender.call( this, renderer, scene, camera, geometry, material, group );
+
+			}
+
+			return;
+
+		}
+
 		updateDeferredColorUniforms( renderer, scene, camera, geometry, material, group );
 
 		material.uniforms.samplerLight.value = _compLight.renderTarget2.texture;
 
 	}
 
-	function setMaterialForwardRendering( object ) {
+	function setVisibleForForwardRendering( object ) {
 
 		if ( object.material === undefined ) return;
 
-		var originalMaterial = _originalMaterialsTable[ object.uuid ];
+		if ( Array.isArray( object.material ) ) {
 
-		if ( originalMaterial.isMultiMaterial === true ) {
+			for ( var i = 0, il = object.material.length; i < il; i ++ ) {
 
-			var material = getInvisibleMultiMaterial( originalMaterial );
+				if ( _originalVisibleTable[ object.material[ i ].uuid ] === undefined ) {
 
-			for ( var i = 0, il = originalMaterial.materials.length; i < il; i ++ ) {
+					_originalVisibleTable[ object.material[ i ].uuid ] = object.material[ i ].visible;
+					object.material[ i ].visible = object.material[ i ].transparent && object.material[ i ].visible;
 
-				material.materials[ i ] = getForwardRenderingMaterial( originalMaterial.materials[ i ] );
+				}
 
 			}
 
-			object.material = material;
-
 		} else {
 
-			object.material = getForwardRenderingMaterial( originalMaterial );
+			if ( _originalVisibleTable[ object.material.uuid ] === undefined ) {
+
+				_originalVisibleTable[ object.material.uuid ] = object.material.visible;
+				object.material.visible = object.material.transparent && object.material.visible;
+
+			}
 
 		}
 
-		object.onBeforeRender = _originalOnBeforeRendersTable[ object.uuid ];
-
 	}
 
-	function getInvisibleMultiMaterial( originalMaterial ) {
+	function restoreVisible( object ) {
 
-		return getMaterialFromCacheOrCreate(
-			originalMaterial,
-			_invisibleMultiMaterialsCache,
-			createInvisibleMaterial
-		);
+		if ( object.material === undefined ) return;
 
-	}
+		if ( Array.isArray( object.material ) ) {
 
-	function createInvisibleMaterial( originalMaterial ) {
+			for ( var i = 0, il = object.material.length; i < il; i ++ ) {
 
-		return _invisibleMaterial;
+				object.material[ i ].visible = _originalVisibleTable[ object.material[ i ].uuid ];
 
-	}
-
-	function getForwardRenderingMaterial( originalMaterial ) {
-
-		if ( originalMaterial.transparent === true && originalMaterial.visible === true ) {
-
-			return originalMaterial;
+			}
 
 		} else {
 
-			return _invisibleMaterial;
+			object.material.visible = _originalVisibleTable[ object.material.uuid ];
 
 		}
 
@@ -775,10 +743,11 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 			data = createCacheData();
 			data.material = createDeferredLightMaterial( light.userData.originalLight );
-
 			cache[ light.uuid ] = data;
 
 		}
+
+		data.used = true;
 
 		return data.material;
 
@@ -798,7 +767,7 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	function createDeferredLightMesh( light, geometry ) {
 
-		var mesh = new THREE.Mesh( geometry, _invisibleMaterial );
+		var mesh = new THREE.Mesh( geometry, _tmpMaterial );
 
 		mesh.userData.originalLight = light;
 
@@ -987,21 +956,22 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	}
 
-	function saveOriginalMaterialAndCheckTransparency( object ) {
+	function saveOriginalOnBeforeRenderAndCheckTransparency( object ) {
 
 		if ( object.material === undefined ) return;
 
-		_originalMaterialsTable[ object.uuid ] = object.material;
 		_originalOnBeforeRendersTable[ object.uuid ] = object.onBeforeRender;
 
 		// _hasTransparentObject is used only for Classic Deferred Rendering
 		if ( _hasTransparentObject || _lightPrePass ) return;
 
-		if ( object.material.isMultiMaterial === true ) {
+		if ( ! object.visible ) return;
 
-			for ( var i = 0, il = object.material.materials.length; i < il; i ++ ) {
+		if ( Array.isArray( object.material ) ) {
 
-				if ( object.material.materials[ i ].transparent === true ) {
+			for ( var i = 0, il = object.material.length; i < il; i ++ ) {
+
+				if ( object.material[ i ].visible === true && object.material[ i ].transparent === true ) {
 
 					_hasTransparentObject = true;
 					break;
@@ -1012,17 +982,16 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 		} else {
 
-			if ( object.material.transparent === true ) _hasTransparentObject = true;
+			if ( object.material.visible === true && object.material.transparent === true ) _hasTransparentObject = true;
 
 		}
 
 	}
 
-	function restoreOriginalMaterial( object ) {
+	function restoreOriginalOnBeforeRender( object ) {
 
 		if ( object.material === undefined ) return;
 
-		object.material = _originalMaterialsTable[ object.uuid ];
 		object.onBeforeRender = _originalOnBeforeRendersTable[ object.uuid ];
 
 	}
@@ -1037,10 +1006,11 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 			data = createCacheData();
 			data.light = createDeferredLight( object );
-
 			_deferredLightsCache[ object.uuid ] = data;
 
 		}
+
+		data.used = true;
 
 		var light = data.light;
 
@@ -1239,7 +1209,7 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	function cleanupTable( table ) {
 
-		var keys = Object.keys( cache );
+		var keys = Object.keys( table );
 
 		for ( var i = 0, il = keys.length; i < il; i ++ ) {
 
@@ -1259,13 +1229,13 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 		cleanupCache( _normalDepthShininessMaterialsCache );
 		cleanupCache( _colorMaterialsCache );
 		cleanupCache( _reconstructionMaterialsCache );
-		cleanupCache( _invisibleMultiMaterialsCache );
 		cleanupCache( _classicDeferredLightMaterialsCache );
 		cleanupCache( _lightPrePassMaterialsCache );
 		cleanupCache( _deferredLightsCache );
 
 		cleanupTable( _originalMaterialsTable );
 		cleanupTable( _originalOnBeforeRendersTable );
+		cleanupTable( _originalVisibleTable );
 
 	}
 
@@ -1303,6 +1273,8 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 		_compNormalDepth.render();
 
+		scene.traverse( restoreOriginalMaterial );
+
 	}
 
 	/*
@@ -1330,6 +1302,8 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 		_gl.stencilOp( _gl.KEEP, _gl.KEEP, _gl.KEEP );
 
 		_compColor.render();
+
+		scene.traverse( restoreOriginalMaterial );
 
 	}
 
@@ -1411,6 +1385,8 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 		_gl.disable( _gl.STENCIL_TEST );
 
+		scene.traverse( restoreOriginalMaterial );
+
 	}
 
 	/*
@@ -1440,7 +1416,8 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 		if ( ! _lightPrePass && _hasTransparentObject ) {
 
-			scene.traverse( setMaterialForwardRendering );
+			scene.traverse( setVisibleForForwardRendering );
+			scene.traverse( restoreOriginalOnBeforeRender );
 
 			_passForward.scene = scene;
 			_passForward.camera = camera;
@@ -1453,6 +1430,12 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 		_this.renderer.autoClearStencil = false;
 
 		_compFinal.render();
+
+		if ( ! _lightPrePass && _hasTransparentObject ) {
+
+			scene.traverse( restoreVisible );
+
+		}
 
 	}
 
@@ -1518,7 +1501,7 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 		_hasTransparentObject = false;
 
-		scene.traverse( saveOriginalMaterialAndCheckTransparency );
+		scene.traverse( saveOriginalOnBeforeRenderAndCheckTransparency );
 
 		updateDeferredCommonUniforms( camera );
 
@@ -1538,7 +1521,9 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 		renderFinal( scene, camera );
 
-		scene.traverse( restoreOriginalMaterial );
+		scene.traverse( restoreOriginalOnBeforeRender );
+
+		cleanupCaches();
 
 		scene.autoUpdate = currentSceneAutoUpdate;
 		this.renderer.autoClearColor = currentAutoClearColor;

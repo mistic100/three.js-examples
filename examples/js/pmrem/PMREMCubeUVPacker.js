@@ -40,12 +40,14 @@ THREE.PMREMCubeUVPacker = function( cubeTextureLods, numLods ) {
 		type: sourceTexture.type,
 		generateMipmaps: sourceTexture.generateMipmaps,
 		anisotropy: sourceTexture.anisotropy,
-		encoding: sourceTexture.encoding
+		encoding: ( sourceTexture.encoding === THREE.RGBEEncoding ) ? THREE.RGBM16Encoding : sourceTexture.encoding
 	};
 
-	if( sourceTexture.encoding === THREE.RGBM16Encoding ) {
+	if ( params.encoding === THREE.RGBM16Encoding ) {
+
 		params.magFilter = THREE.LinearFilter;
 		params.minFilter = THREE.LinearFilter;
+
 	}
 
 	this.CubeUVRenderTarget = new THREE.WebGLRenderTarget( size, size, params );
@@ -57,7 +59,7 @@ THREE.PMREMCubeUVPacker = function( cubeTextureLods, numLods ) {
 	this.scene.add( this.camera );
 
 	this.objects = [];
-	var xOffset = 0;
+
 	var faceOffsets = [];
 	faceOffsets.push( new THREE.Vector2( 0, 0 ) );
 	faceOffsets.push( new THREE.Vector2( 1, 0 ) );
@@ -65,7 +67,7 @@ THREE.PMREMCubeUVPacker = function( cubeTextureLods, numLods ) {
 	faceOffsets.push( new THREE.Vector2( 0, 1 ) );
 	faceOffsets.push( new THREE.Vector2( 1, 1 ) );
 	faceOffsets.push( new THREE.Vector2( 2, 1 ) );
-	var yOffset = 0;
+
 	var textureResolution = size;
 	size = cubeTextureLods[ 0 ].width;
 
@@ -75,8 +77,7 @@ THREE.PMREMCubeUVPacker = function( cubeTextureLods, numLods ) {
 	for ( var i = 0; i < this.numLods; i ++ ) {
 
 		var offset1 = ( textureResolution - textureResolution / c ) * 0.5;
-		if ( size > 16 )
-		c *= 2;
+		if ( size > 16 ) c *= 2;
 		var nMips = size > 16 ? 6 : 1;
 		var mipOffsetX = 0;
 		var mipOffsetY = 0;
@@ -93,8 +94,6 @@ THREE.PMREMCubeUVPacker = function( cubeTextureLods, numLods ) {
 				material.envMap = this.cubeLods[ i ].texture;
 				material.uniforms[ 'faceIndex' ].value = k;
 				material.uniforms[ 'mapSize' ].value = mipSize;
-				var color = material.uniforms[ 'testColor' ].value;
-				//color.copy(testColor[j]);
 				var planeMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry( mipSize, mipSize, 0 ),
 				material );
@@ -111,8 +110,7 @@ THREE.PMREMCubeUVPacker = function( cubeTextureLods, numLods ) {
 
 		}
 		offset2 += 2 * size;
-		if ( size > 16 )
-		size /= 2;
+		if ( size > 16 ) size /= 2;
 
 	}
 
@@ -120,9 +118,9 @@ THREE.PMREMCubeUVPacker = function( cubeTextureLods, numLods ) {
 
 THREE.PMREMCubeUVPacker.prototype = {
 
-	constructor : THREE.PMREMCubeUVPacker,
+	constructor: THREE.PMREMCubeUVPacker,
 
-	update: function( renderer ) {
+	update: function ( renderer ) {
 
 		var gammaInput = renderer.gammaInput;
 		var gammaOutput = renderer.gammaOutput;
@@ -141,7 +139,7 @@ THREE.PMREMCubeUVPacker.prototype = {
 
 	},
 
-	getShader: function() {
+	getShader: function () {
 
 		var shaderMaterial = new THREE.ShaderMaterial( {
 

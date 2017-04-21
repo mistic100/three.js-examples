@@ -1615,7 +1615,7 @@ THREE.SEA3D.prototype.updateTransform = function ( obj3d, sea ) {
 
 	var mtx = THREE.SEA3D.MTXBUF, vec = THREE.SEA3D.VECBUF;
 
-	if ( sea.transform ) mtx.elements.set( sea.transform );
+	if ( sea.transform ) mtx.fromArray( sea.transform );
 	else mtx.makeTranslation( sea.position.x, sea.position.y, sea.position.z );
 
 	// matrix
@@ -2012,7 +2012,8 @@ THREE.SEA3D.prototype.readMesh = function ( sea ) {
 
 			}
 
-			mat = new THREE.MultiMaterial( mats );
+//			mat = new THREE.MultiMaterial( mats );
+			mat = mats;
 
 		} else {
 
