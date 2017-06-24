@@ -18,7 +18,7 @@
   "ignore": [
     "crossfade/**",
     "libs/**",
-    "loaders/draco_decoder.js",
+    "loaders/draco/draco_decoder.js",
     "loaders/ctm/ctm.js",
     "loaders/ctm/lzma.js",
     "loaders/sea3d/SEA3D.js",

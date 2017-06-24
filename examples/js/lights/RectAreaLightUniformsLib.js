@@ -66,7 +66,6 @@
 
 	var ltc_brdf = { ltcMat: { value: null }, ltcMag: { value: null } };
 
-	Object.assign( ShaderLib.phong.uniforms, ltc_brdf );
 	Object.assign( ShaderLib.standard.uniforms, ltc_brdf );
 	Object.assign( ShaderLib.physical.uniforms, ltc_brdf );
 

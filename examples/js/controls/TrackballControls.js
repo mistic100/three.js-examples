@@ -591,6 +591,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	function contextmenu( event ) {
 
+		if ( _this.enabled === false ) return;
+
 		event.preventDefault();
 
 	}
