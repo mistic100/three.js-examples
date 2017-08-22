@@ -1,6 +1,6 @@
 (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define('three.EdgeShader', ['three'], factory);
+        define('three.FreiChenShader', ['three'], factory);
     }
     else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
         module.exports = factory(require('three'));
@@ -19,7 +19,7 @@
  * aspect: vec2 of (1/width, 1/height)
  */
 
-THREE.EdgeShader = {
+THREE.FreiChenShader = {
 
 	uniforms: {
 

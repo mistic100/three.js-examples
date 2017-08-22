@@ -43,7 +43,6 @@ THREE.ColladaLoader = function () {
 	var skins;
 
 	var flip_uv = true;
-	var preferredShading = THREE.SmoothShading;
 
 	var options = {
 		// Force Geometry to always be centered at the local origin of the
@@ -222,12 +221,6 @@ THREE.ColladaLoader = function () {
 		}
 
 		return result;
-
-	}
-
-	function setPreferredShading ( shading ) {
-
-		preferredShading = shading;
 
 	}
 
@@ -3829,7 +3822,6 @@ THREE.ColladaLoader = function () {
 
 		}
 
-		props[ 'shading' ] = preferredShading;
 		props[ 'side' ] = this.effect.doubleSided ? THREE.DoubleSide : THREE.FrontSide;
 
 		if ( props.diffuse !== undefined ) {
@@ -5548,7 +5540,6 @@ THREE.ColladaLoader = function () {
 
 		load: load,
 		parse: parse,
-		setPreferredShading: setPreferredShading,
 		applySkin: applySkin,
 		geometries : geometries,
 		options: options

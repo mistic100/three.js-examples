@@ -2316,7 +2316,8 @@ THREE.MMDHelper.prototype = {
 			//       the name of them begins with "_".
 			mesh.mixer.addEventListener( 'loop', function ( e ) {
 
-				if ( e.action._clip.tracks[ 0 ].name.indexOf( '.bones' ) !== 0 ) return;
+				if ( e.action._clip.tracks.length > 0 &&
+				     e.action._clip.tracks[ 0 ].name.indexOf( '.bones' ) !== 0 ) return;
 
 				var mesh = e.target._root;
 				mesh.looped = true;
@@ -2332,7 +2333,7 @@ THREE.MMDHelper.prototype = {
 
 				var action = mesh.mixer.clipAction( clip );
 
-				if ( clip.tracks[ 0 ].name.indexOf( '.morphTargetInfluences' ) === 0 ) {
+				if ( clip.tracks.length > 0 && clip.tracks[ 0 ].name.indexOf( '.morphTargetInfluences' ) === 0 ) {
 
 					if ( ! foundMorphAnimation ) {
 
