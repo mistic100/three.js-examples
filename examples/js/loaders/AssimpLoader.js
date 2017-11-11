@@ -81,7 +81,7 @@ THREE.AssimpLoader.prototype = {
 				//      var keyscl =  key.parentspaceScl || key.scl;
 				var key2pos = nextKey.position;
 				var key2rot = nextKey.quaternion;
-					//  var key2scl =  key2.parentspaceScl || key2.scl;
+				//  var key2scl =  key2.parentspaceScl || key2.scl;
 				Virtulous.KeyFrame.tempAniPos.x = keypos.x * l2 + key2pos.x * l;
 				Virtulous.KeyFrame.tempAniPos.y = keypos.y * l2 + key2pos.y * l;
 				Virtulous.KeyFrame.tempAniPos.z = keypos.z * l2 + key2pos.z * l;
@@ -525,7 +525,7 @@ THREE.AssimpLoader.prototype = {
 			rootBone.position.copy( root.position );
 			rootBone.quaternion.copy( root.quaternion );
 			rootBone.scale.copy( root.scale );
-			scene.nodeCount++;
+			scene.nodeCount ++;
 			rootBone.name = "bone_" + root.name + scene.nodeCount.toString();
 
 			if ( ! scene.nodeToBoneMap[ root.name ] )
@@ -556,7 +556,11 @@ THREE.AssimpLoader.prototype = {
 
 			}
 
-			pairs.sort( function ( a, b ) { return b.w - a.w } );
+			pairs.sort( function ( a, b ) {
+
+				return b.w - a.w;
+
+			 } );
 
 			while ( pairs.length < 4 ) {
 
@@ -1029,17 +1033,6 @@ THREE.AssimpLoader.prototype = {
 
 		};
 
-		var nameTexMapping = {
-
-			"$tex.ambient": "ambientMap",
-			"$clr.diffuse": "map",
-			"$clr.specular": "specMap",
-			"$clr.emissive": "emissive",
-			"$clr.transparent": "alphaMap",
-			"$clr.reflective": "reflectMap",
-
-		};
-
 		var nameTypeMapping = {
 
 			"?mat.name": "string",
@@ -1214,9 +1207,21 @@ THREE.AssimpLoader.prototype = {
 			this.getLength = function () {
 
 				return Math.max(
-					Math.max.apply( null, this.mPositionKeys.map( function ( a ) { return a.mTime } ) ),
-					Math.max.apply( null, this.mRotationKeys.map( function ( a ) { return a.mTime } ) ),
-					Math.max.apply( null, this.mScalingKeys.map( function ( a ) { return a.mTime } ) )
+					Math.max.apply( null, this.mPositionKeys.map( function ( a ) {
+
+						return a.mTime;
+
+					} ) ),
+					Math.max.apply( null, this.mRotationKeys.map( function ( a ) {
+
+						return a.mTime;
+
+					} ) ),
+					Math.max.apply( null, this.mScalingKeys.map( function ( a ) {
+
+						return a.mTime;
+
+				 } ) )
 				);
 
 			};
@@ -1289,7 +1294,11 @@ THREE.AssimpLoader.prototype = {
 
 				}
 
-				animationHandle.length = Math.max.apply( null, animationHandle.tracks.map( function ( e ) { return e.length } ) );
+				animationHandle.length = Math.max.apply( null, animationHandle.tracks.map( function ( e ) {
+
+					return e.length;
+
+				} ) );
 				return animationHandle;
 
 			};
@@ -1409,9 +1418,9 @@ THREE.AssimpLoader.prototype = {
 
 				var m = new THREE.Matrix4();
 
-				for ( var i = 0; i < 4; ++i ) {
+				for ( var i = 0; i < 4; ++ i ) {
 
-					for ( var i2 = 0; i2 < 4; ++i2 ) {
+					for ( var i2 = 0; i2 < 4; ++ i2 ) {
 
 						m.elements[ i * 4 + i2 ] = this.elements[ i2 ][ i ];
 
@@ -1559,9 +1568,9 @@ THREE.AssimpLoader.prototype = {
 
 			var m = new aiMatrix4();
 
-			for ( var i = 0; i < 4; ++i ) {
+			for ( var i = 0; i < 4; ++ i ) {
 
-				for ( var i2 = 0; i2 < 4; ++i2 ) {
+				for ( var i2 = 0; i2 < 4; ++ i2 ) {
 
 					m.elements[ i ][ i2 ] = readFloat( stream );
 
@@ -1671,7 +1680,7 @@ THREE.AssimpLoader.prototype = {
 
 				node.mMeshes = [];
 
-				for ( var i = 0; i < node.mNumMeshes; ++i ) {
+				for ( var i = 0; i < node.mNumMeshes; ++ i ) {
 
 					node.mMeshes[ i ] = Read_unsigned_int( stream );
 
@@ -1683,7 +1692,7 @@ THREE.AssimpLoader.prototype = {
 
 				node.mChildren = [];
 
-				for ( var i = 0; i < node.mNumChildren; ++i ) {
+				for ( var i = 0; i < node.mNumChildren; ++ i ) {
 
 					var node2 = ReadBinaryNode( stream, node, depth ++ );
 					node.mChildren[ i ] = node2;
@@ -1799,7 +1808,7 @@ THREE.AssimpLoader.prototype = {
 
 			}
 
-			for ( var n = 0; n < AI_MAX_NUMBER_OF_COLOR_SETS; ++n ) {
+			for ( var n = 0; n < AI_MAX_NUMBER_OF_COLOR_SETS; ++ n ) {
 
 				if ( ! ( c & ASSBIN_MESH_HAS_COLOR( n ) ) ) break;
 
@@ -1821,7 +1830,7 @@ THREE.AssimpLoader.prototype = {
 
 			mesh.mTexCoordsBuffers = [];
 
-			for ( var n = 0; n < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++n ) {
+			for ( var n = 0; n < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++ n ) {
 
 				if ( ! ( c & ASSBIN_MESH_HAS_TEXCOORD( n ) ) ) break;
 
@@ -1869,14 +1878,14 @@ THREE.AssimpLoader.prototype = {
 				var indexCounter = 0;
 				mesh.mIndexArray = [];
 
-				for ( var i = 0; i < mesh.mNumFaces; ++i ) {
+				for ( var i = 0; i < mesh.mNumFaces; ++ i ) {
 
 					var f = mesh.mFaces[ i ] = new aiFace();
 					// BOOST_STATIC_ASSERT(AI_MAX_FACE_INDICES <= 0xffff);
 					f.mNumIndices = Read_uint16_t( stream );
 					f.mIndices = [];
 
-					for ( var a = 0; a < f.mNumIndices; ++a ) {
+					for ( var a = 0; a < f.mNumIndices; ++ a ) {
 
 						if ( mesh.mNumVertices < ( 1 << 16 ) ) {
 
@@ -1892,14 +1901,13 @@ THREE.AssimpLoader.prototype = {
 
 					}
 
-					if(f.mNumIndices === 3) {
+					if ( f.mNumIndices === 3 ) {
 
 						mesh.mIndexArray.push( f.mIndices[ 0 ] );
 						mesh.mIndexArray.push( f.mIndices[ 1 ] );
 						mesh.mIndexArray.push( f.mIndices[ 2 ] );
 
-					}
-					else if(f.mNumIndices === 4) {
+					} else if ( f.mNumIndices === 4 ) {
 
 						mesh.mIndexArray.push( f.mIndices[ 0 ] );
 						mesh.mIndexArray.push( f.mIndices[ 1 ] );
@@ -1910,7 +1918,7 @@ THREE.AssimpLoader.prototype = {
 
 					} else {
 
-						throw ( new Error( "Sorry, can't currently triangulate polys. Use the triangulate preprocessor in Assimp." ))
+						throw ( new Error( "Sorry, can't currently triangulate polys. Use the triangulate preprocessor in Assimp." ) );
 
 					}
 
@@ -1924,7 +1932,7 @@ THREE.AssimpLoader.prototype = {
 
 				mesh.mBones = [];
 
-				for ( var a = 0; a < mesh.mNumBones; ++a ) {
+				for ( var a = 0; a < mesh.mNumBones; ++ a ) {
 
 					mesh.mBones[ a ] = new aiBone();
 					ReadBinaryBone( stream, mesh.mBones[ a ] );
@@ -1971,7 +1979,7 @@ THREE.AssimpLoader.prototype = {
 
 				mat.mProperties = [];
 
-				for ( var i = 0; i < mat.mNumProperties; ++i ) {
+				for ( var i = 0; i < mat.mNumProperties; ++ i ) {
 
 					mat.mProperties[ i ] = new aiMaterialProperty();
 					ReadBinaryMaterialProperty( stream, mat.mProperties[ i ] );
@@ -2063,7 +2071,7 @@ THREE.AssimpLoader.prototype = {
 
 				anim.mChannels = [];
 
-				for ( var a = 0; a < anim.mNumChannels; ++a ) {
+				for ( var a = 0; a < anim.mNumChannels; ++ a ) {
 
 					anim.mChannels[ a ] = new aiNodeAnim();
 					ReadBinaryNodeAnim( stream, anim.mChannels[ a ] );
@@ -2170,7 +2178,7 @@ THREE.AssimpLoader.prototype = {
 
 				scene.mMeshes = [];
 
-				for ( var i = 0; i < scene.mNumMeshes; ++i ) {
+				for ( var i = 0; i < scene.mNumMeshes; ++ i ) {
 
 					scene.mMeshes[ i ] = new aiMesh();
 					ReadBinaryMesh( stream, scene.mMeshes[ i ] );
@@ -2183,7 +2191,7 @@ THREE.AssimpLoader.prototype = {
 
 				scene.mMaterials = [];
 
-				for ( var i = 0; i < scene.mNumMaterials; ++i ) {
+				for ( var i = 0; i < scene.mNumMaterials; ++ i ) {
 
 					scene.mMaterials[ i ] = new aiMaterial();
 					ReadBinaryMaterial( stream, scene.mMaterials[ i ] );
@@ -2196,7 +2204,7 @@ THREE.AssimpLoader.prototype = {
 
 				scene.mAnimations = [];
 
-				for ( var i = 0; i < scene.mNumAnimations; ++i ) {
+				for ( var i = 0; i < scene.mNumAnimations; ++ i ) {
 
 					scene.mAnimations[ i ] = new aiAnimation();
 					ReadBinaryAnim( stream, scene.mAnimations[ i ] );
@@ -2209,7 +2217,7 @@ THREE.AssimpLoader.prototype = {
 
 				scene.mTextures = [];
 
-				for ( var i = 0; i < scene.mNumTextures; ++i ) {
+				for ( var i = 0; i < scene.mNumTextures; ++ i ) {
 
 					scene.mTextures[ i ] = new aiTexture();
 					ReadBinaryTexture( stream, scene.mTextures[ i ] );
@@ -2222,7 +2230,7 @@ THREE.AssimpLoader.prototype = {
 
 				scene.mLights = [];
 
-				for ( var i = 0; i < scene.mNumLights; ++i ) {
+				for ( var i = 0; i < scene.mNumLights; ++ i ) {
 
 					scene.mLights[ i ] = new aiLight();
 					ReadBinaryLight( stream, scene.mLights[ i ] );
@@ -2235,7 +2243,7 @@ THREE.AssimpLoader.prototype = {
 
 				scene.mCameras = [];
 
-				for ( var i = 0; i < scene.mNumCameras; ++i ) {
+				for ( var i = 0; i < scene.mNumCameras; ++ i ) {
 
 					scene.mCameras[ i ] = new aiCamera();
 					ReadBinaryCamera( stream, scene.mCameras[ i ] );

@@ -14,7 +14,7 @@
  * @author Mugen87 / https://github.com/Mugen87
  */
 
-( function() {
+( function () {
 
 	// ConvexGeometry
 
@@ -94,5 +94,5 @@
 	THREE.ConvexGeometry = ConvexGeometry;
 	THREE.ConvexBufferGeometry = ConvexBufferGeometry;
 
-} ) ();
+} )();
 }));

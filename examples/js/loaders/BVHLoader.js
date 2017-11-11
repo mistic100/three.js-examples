@@ -20,7 +20,7 @@
  *
  */
 
-THREE.BVHLoader = function( manager ) {
+THREE.BVHLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
@@ -38,7 +38,7 @@ THREE.BVHLoader.prototype = {
 		var scope = this;
 
 		var loader = new THREE.FileLoader( scope.manager );
-		loader.load( url, function( text ) {
+		loader.load( url, function ( text ) {
 
 			onLoad( scope.parse( text ) );
 
@@ -149,29 +149,29 @@ THREE.BVHLoader.prototype = {
 
 				switch ( bone.channels[ i ] ) {
 
-				case 'Xposition':
-					keyframe.position.x = parseFloat( data.shift().trim() );
-					break;
-				case 'Yposition':
-					keyframe.position.y = parseFloat( data.shift().trim() );
-					break;
-				case 'Zposition':
-					keyframe.position.z = parseFloat( data.shift().trim() );
-					break;
-				case 'Xrotation':
-					quat.setFromAxisAngle( vx, parseFloat( data.shift().trim() ) * Math.PI / 180 );
-					keyframe.rotation.multiply( quat );
-					break;
-				case 'Yrotation':
-					quat.setFromAxisAngle( vy, parseFloat( data.shift().trim() ) * Math.PI / 180 );
-					keyframe.rotation.multiply( quat );
-					break;
-				case 'Zrotation':
-					quat.setFromAxisAngle( vz, parseFloat( data.shift().trim() ) * Math.PI / 180 );
-					keyframe.rotation.multiply( quat );
-					break;
-				default:
-					console.warn( 'THREE.BVHLoader: Invalid channel type.' );
+					case 'Xposition':
+						keyframe.position.x = parseFloat( data.shift().trim() );
+						break;
+					case 'Yposition':
+						keyframe.position.y = parseFloat( data.shift().trim() );
+						break;
+					case 'Zposition':
+						keyframe.position.z = parseFloat( data.shift().trim() );
+						break;
+					case 'Xrotation':
+						quat.setFromAxisAngle( vx, parseFloat( data.shift().trim() ) * Math.PI / 180 );
+						keyframe.rotation.multiply( quat );
+						break;
+					case 'Yrotation':
+						quat.setFromAxisAngle( vy, parseFloat( data.shift().trim() ) * Math.PI / 180 );
+						keyframe.rotation.multiply( quat );
+						break;
+					case 'Zrotation':
+						quat.setFromAxisAngle( vz, parseFloat( data.shift().trim() ) * Math.PI / 180 );
+						keyframe.rotation.multiply( quat );
+						break;
+					default:
+						console.warn( 'THREE.BVHLoader: Invalid channel type.' );
 
 				}
 

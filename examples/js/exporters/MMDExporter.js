@@ -49,7 +49,7 @@ THREE.MMDExporter = function () {
 
 		for ( var i = 0, il = str.length; i < il; i ++ ) {
 
-			var code = str.charCodeAt( i )
+			var code = str.charCodeAt( i );
 
 			var value = u2sTable[ code ];
 
@@ -116,7 +116,7 @@ THREE.MMDExporter = function () {
 
 			var a = num.toString();
 
-			if ( a.indexOf( '.' ) === -1 ) {
+			if ( a.indexOf( '.' ) === - 1 ) {
 
 				a += '.';
 
@@ -192,9 +192,9 @@ THREE.MMDExporter = function () {
 			var qArray = quaternion2.copy( bone2.quaternion ).conjugate().multiply( quaternion ).toArray();
 
 			// right to left
-			pArray[ 2 ] = -pArray[ 2 ];
-			qArray[ 0 ] = -qArray[ 0 ];
-			qArray[ 1 ] = -qArray[ 1 ];
+			pArray[ 2 ] = - pArray[ 2 ];
+			qArray[ 0 ] = - qArray[ 0 ];
+			qArray[ 1 ] = - qArray[ 1 ];
 
 			array.push( 'Bone' + i + '{' + bone.name );
 			array.push( '  ' + toStringsFromArray( pArray ) + ';' );
@@ -220,5 +220,4 @@ THREE.MMDExporter = function () {
 	*/
 
 };
-
 }));

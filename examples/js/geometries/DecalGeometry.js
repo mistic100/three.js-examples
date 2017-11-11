@@ -28,9 +28,9 @@
  *
  */
 
-( function() {
+( function () {
 
-  function DecalGeometry( mesh, position, orientation, size ) {
+	function DecalGeometry( mesh, position, orientation, size ) {
 
   	THREE.BufferGeometry.call( this );
 
@@ -66,7 +66,7 @@
 
   	function generate() {
 
-  		var i, j;
+  		var i;
   		var geometry = new THREE.BufferGeometry();
   		var decalVertices = [];
 
@@ -125,12 +125,12 @@
 
   		// second, clip the geometry so that it doesn't extend out from the projector
 
-  		decalVertices = clipGeometry( decalVertices, plane.set(   1,   0,   0 ) );
-  		decalVertices = clipGeometry( decalVertices, plane.set( - 1,   0,   0 ) );
-  		decalVertices = clipGeometry( decalVertices, plane.set(   0,   1,   0 ) );
-  		decalVertices = clipGeometry( decalVertices, plane.set(   0, - 1,   0 ) );
-  		decalVertices = clipGeometry( decalVertices, plane.set(   0,   0,   1 ) );
-  		decalVertices = clipGeometry( decalVertices, plane.set(   0,   0, - 1 ) );
+  		decalVertices = clipGeometry( decalVertices, plane.set( 1, 0, 0 ) );
+  		decalVertices = clipGeometry( decalVertices, plane.set( - 1, 0, 0 ) );
+  		decalVertices = clipGeometry( decalVertices, plane.set( 0, 1, 0 ) );
+  		decalVertices = clipGeometry( decalVertices, plane.set( 0, - 1, 0 ) );
+  		decalVertices = clipGeometry( decalVertices, plane.set( 0, 0, 1 ) );
+  		decalVertices = clipGeometry( decalVertices, plane.set( 0, 0, - 1 ) );
 
   		// third, generate final vertices, normals and uvs
 
@@ -344,29 +344,29 @@
 
   	}
 
-  }
+	}
 
-  DecalGeometry.prototype = Object.create( THREE.BufferGeometry.prototype );
-  DecalGeometry.prototype.constructor = DecalGeometry;
+	DecalGeometry.prototype = Object.create( THREE.BufferGeometry.prototype );
+	DecalGeometry.prototype.constructor = DecalGeometry;
 
-  // helper
+	// helper
 
-  function DecalVertex( position, normal ) {
+	function DecalVertex( position, normal ) {
 
-  	this.position = position;
-  	this.normal = normal;
+		this.position = position;
+		this.normal = normal;
 
-  }
+	}
 
-  DecalVertex.prototype.clone = function() {
+	DecalVertex.prototype.clone = function () {
 
-  	return new DecalVertex( this.position.clone(), this.normal.clone() );
+		return new DecalVertex( this.position.clone(), this.normal.clone() );
 
-  };
+	};
 
-  // export
+	// export
 
-  THREE.DecalGeometry = DecalGeometry;
+	THREE.DecalGeometry = DecalGeometry;
 
-} ) ();
+} )();
 }));

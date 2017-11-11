@@ -1,6 +1,6 @@
 (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define('three.SkyShader', ['three'], factory);
+        define('three.Sky', ['three'], factory);
     }
     else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
         module.exports = factory(require('three'));
@@ -28,25 +28,20 @@
 
 THREE.Sky = function () {
 
-	var skyShader = THREE.Sky.SkyShader;
+	var shader = THREE.Sky.SkyShader;
 
-	var skyUniforms = THREE.UniformsUtils.clone( skyShader.uniforms );
-
-	var skyMat = new THREE.ShaderMaterial( {
-		fragmentShader: skyShader.fragmentShader,
-		vertexShader: skyShader.vertexShader,
-		uniforms: skyUniforms,
+	var material = new THREE.ShaderMaterial( {
+		fragmentShader: shader.fragmentShader,
+		vertexShader: shader.vertexShader,
+		uniforms: THREE.UniformsUtils.clone( shader.uniforms ),
 		side: THREE.BackSide
 	} );
 
-	var skyGeo = new THREE.SphereBufferGeometry( 450000, 32, 15 );
-	var skyMesh = new THREE.Mesh( skyGeo, skyMat );
-
-	// Expose variables
-	this.mesh = skyMesh;
-	this.uniforms = skyUniforms;
+	THREE.Mesh.call( this, new THREE.SphereBufferGeometry( 1, 32, 15 ), material );
 
 };
+
+THREE.Sky.prototype = Object.create( THREE.Mesh.prototype );
 
 THREE.Sky.SkyShader = {
 

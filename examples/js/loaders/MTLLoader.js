@@ -460,7 +460,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					break;
 
 				case 'd':
-					n = parseFloat(value);
+					n = parseFloat( value );
 
 					if ( n < 1 ) {
 
@@ -472,7 +472,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					break;
 
 				case 'tr':
-					n = parseFloat(value);
+					n = parseFloat( value );
 
 					if ( n > 0 ) {
 

@@ -35,7 +35,7 @@ THREE.TypedGeometryExporter.prototype = {
 		for ( var key in attributes ) {
 
 			var attribute = attributes[ key ];
-			
+
 			var typedArray = geometry[ attribute ];
 			var array = [];
 
@@ -56,7 +56,7 @@ THREE.TypedGeometryExporter.prototype = {
 			output.boundingSphere = {
 				center: boundingSphere.center.toArray(),
 				radius: boundingSphere.radius
-			}
+			};
 
 		}
 
