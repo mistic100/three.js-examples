@@ -11,6 +11,7 @@
   },
   "noUMD": [
     "loaders/ctm/CTMWorker.js",
+    "loaders/XLoader.js",
     "renderers/RaytracingWorker.js",
     "Cloth.js",
     "Detector.js"
