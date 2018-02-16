@@ -91,11 +91,10 @@ THREE.SAOPass = function ( scene, camera, depthTexture, useNormals, resolution )
 	this.saoMaterial.extensions.drawBuffers = true;
 	this.saoMaterial.defines[ 'DEPTH_PACKING' ] = this.supportsDepthTextureExtension ? 0 : 1;
 	this.saoMaterial.defines[ 'NORMAL_TEXTURE' ] = this.supportsNormalTexture ? 1 : 0;
+	this.saoMaterial.defines[ 'PERSPECTIVE_CAMERA' ] = this.camera.isPerspectiveCamera ? 1 : 0;
 	this.saoMaterial.uniforms[ 'tDepth' ].value = ( this.supportsDepthTextureExtension ) ? depthTexture : this.depthRenderTarget.texture;
 	this.saoMaterial.uniforms[ 'tNormal' ].value = this.normalRenderTarget.texture;
 	this.saoMaterial.uniforms[ 'size' ].value.set( this.resolution.x, this.resolution.y );
-	this.saoMaterial.uniforms[ 'cameraNear' ].value = this.camera.near;
-	this.saoMaterial.uniforms[ 'cameraFar' ].value = this.camera.far;
 	this.saoMaterial.uniforms[ 'cameraInverseProjectionMatrix' ].value.getInverse( this.camera.projectionMatrix );
 	this.saoMaterial.uniforms[ 'cameraProjectionMatrix' ].value = this.camera.projectionMatrix;
 	this.saoMaterial.blending = THREE.NoBlending;
@@ -113,10 +112,9 @@ THREE.SAOPass = function ( scene, camera, depthTexture, useNormals, resolution )
 		fragmentShader: THREE.DepthLimitedBlurShader.fragmentShader
 	} );
 	this.vBlurMaterial.defines[ 'DEPTH_PACKING' ] = this.supportsDepthTextureExtension ? 0 : 1;
+	this.vBlurMaterial.defines[ 'PERSPECTIVE_CAMERA' ] = this.camera.isPerspectiveCamera ? 1 : 0;
 	this.vBlurMaterial.uniforms[ 'tDiffuse' ].value = this.saoRenderTarget.texture;
 	this.vBlurMaterial.uniforms[ 'tDepth' ].value = ( this.supportsDepthTextureExtension ) ? depthTexture : this.depthRenderTarget.texture;
-	this.vBlurMaterial.uniforms[ 'cameraNear' ].value = this.camera.near;
-	this.vBlurMaterial.uniforms[ 'cameraFar' ].value = this.camera.far;
 	this.vBlurMaterial.uniforms[ 'size' ].value.set( this.resolution.x, this.resolution.y );
 	this.vBlurMaterial.blending = THREE.NoBlending;
 
@@ -127,10 +125,9 @@ THREE.SAOPass = function ( scene, camera, depthTexture, useNormals, resolution )
 		fragmentShader: THREE.DepthLimitedBlurShader.fragmentShader
 	} );
 	this.hBlurMaterial.defines[ 'DEPTH_PACKING' ] = this.supportsDepthTextureExtension ? 0 : 1;
+	this.hBlurMaterial.defines[ 'PERSPECTIVE_CAMERA' ] = this.camera.isPerspectiveCamera ? 1 : 0;
 	this.hBlurMaterial.uniforms[ 'tDiffuse' ].value = this.blurIntermediateRenderTarget.texture;
 	this.hBlurMaterial.uniforms[ 'tDepth' ].value = ( this.supportsDepthTextureExtension ) ? depthTexture : this.depthRenderTarget.texture;
-	this.hBlurMaterial.uniforms[ 'cameraNear' ].value = this.camera.near;
-	this.hBlurMaterial.uniforms[ 'cameraFar' ].value = this.camera.far;
 	this.hBlurMaterial.uniforms[ 'size' ].value.set( this.resolution.x, this.resolution.y );
 	this.hBlurMaterial.blending = THREE.NoBlending;
 
@@ -200,7 +197,7 @@ THREE.SAOPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), 
 
 		}
 
-		if ( this.params.output == 1 ) {
+		if ( this.params.output === 1 ) {
 
 			return;
 
@@ -218,11 +215,18 @@ THREE.SAOPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), 
 		this.saoMaterial.uniforms[ 'scale' ].value = this.params.saoScale;
 		this.saoMaterial.uniforms[ 'kernelRadius' ].value = this.params.saoKernelRadius;
 		this.saoMaterial.uniforms[ 'minResolution' ].value = this.params.saoMinResolution;
+		this.saoMaterial.uniforms[ 'cameraNear' ].value = this.camera.near;
+		this.saoMaterial.uniforms[ 'cameraFar' ].value = this.camera.far;
 		// this.saoMaterial.uniforms['randomSeed'].value = Math.random();
 
 		var depthCutoff = this.params.saoBlurDepthCutoff * ( this.camera.far - this.camera.near );
 		this.vBlurMaterial.uniforms[ 'depthCutoff' ].value = depthCutoff;
 		this.hBlurMaterial.uniforms[ 'depthCutoff' ].value = depthCutoff;
+
+		this.vBlurMaterial.uniforms[ 'cameraNear' ].value = this.camera.near;
+		this.vBlurMaterial.uniforms[ 'cameraFar' ].value = this.camera.far;
+		this.hBlurMaterial.uniforms[ 'cameraNear' ].value = this.camera.near;
+		this.hBlurMaterial.uniforms[ 'cameraFar' ].value = this.camera.far;
 
 		this.params.saoBlurRadius = Math.floor( this.params.saoBlurRadius );
 		if ( ( this.prevStdDev !== this.params.saoBlurStdDev ) || ( this.prevNumSamples !== this.params.saoBlurRadius ) ) {
@@ -266,7 +270,7 @@ THREE.SAOPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), 
 
 		var outputMaterial = this.materialCopy;
 		// Setting up SAO rendering
-		if ( this.params.output == 3 ) {
+		if ( this.params.output === 3 ) {
 
 			if ( this.supportsDepthTextureExtension ) {
 
@@ -281,7 +285,7 @@ THREE.SAOPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), 
 
 			}
 
-		} else if ( this.params.output == 4 ) {
+		} else if ( this.params.output === 4 ) {
 
 			this.materialCopy.uniforms[ 'tDiffuse' ].value = this.normalRenderTarget.texture;
 			this.materialCopy.needsUpdate = true;
@@ -294,7 +298,7 @@ THREE.SAOPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), 
 		}
 
 		// Blending depends on output, only want a CustomBlending when showing SAO
-		if ( this.params.output == 0 ) {
+		if ( this.params.output === 0 ) {
 
 			outputMaterial.blending = THREE.CustomBlending;
 

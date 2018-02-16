@@ -27,7 +27,7 @@
  *
  */
 
-THREE.GPUParticleSystem = function( options ) {
+THREE.GPUParticleSystem = function ( options ) {
 
 	THREE.Object3D.apply( this, arguments );
 
@@ -170,13 +170,13 @@ THREE.GPUParticleSystem = function( options ) {
 
 	var i;
 
-	for ( i = 1e5; i > 0; i-- ) {
+	for ( i = 1e5; i > 0; i -- ) {
 
 		this.rand.push( Math.random() - 0.5 );
 
 	}
 
-	this.random = function() {
+	this.random = function () {
 
 		return ++ i >= this.rand.length ? this.rand[ i = 1 ] : this.rand[ i ];
 
@@ -217,7 +217,7 @@ THREE.GPUParticleSystem = function( options ) {
 	this.particleShaderMat.defaultAttributeValues.particlePositionsStartTime = [ 0, 0, 0, 0 ];
 	this.particleShaderMat.defaultAttributeValues.particleVelColSizeLife = [ 0, 0, 0, 0 ];
 
-	this.init = function() {
+	this.init = function () {
 
 		for ( var i = 0; i < this.PARTICLE_CONTAINERS; i ++ ) {
 
@@ -229,7 +229,7 @@ THREE.GPUParticleSystem = function( options ) {
 
 	};
 
-	this.spawnParticle = function( options ) {
+	this.spawnParticle = function ( options ) {
 
 		this.PARTICLE_CURSOR ++;
 
@@ -245,7 +245,7 @@ THREE.GPUParticleSystem = function( options ) {
 
 	};
 
-	this.update = function( time ) {
+	this.update = function ( time ) {
 
 		for ( var i = 0; i < this.PARTICLE_CONTAINERS; i ++ ) {
 
@@ -255,7 +255,7 @@ THREE.GPUParticleSystem = function( options ) {
 
 	};
 
-	this.dispose = function() {
+	this.dispose = function () {
 
 		this.particleShaderMat.dispose();
 		this.particleNoiseTex.dispose();
@@ -279,7 +279,7 @@ THREE.GPUParticleSystem.prototype.constructor = THREE.GPUParticleSystem;
 
 // Subclass for particle containers, allows for very large arrays to be spread out
 
-THREE.GPUParticleContainer = function( maxParticles, particleSystem ) {
+THREE.GPUParticleContainer = function ( maxParticles, particleSystem ) {
 
 	THREE.Object3D.apply( this, arguments );
 
@@ -313,7 +313,7 @@ THREE.GPUParticleContainer = function( maxParticles, particleSystem ) {
 	var velocity = new THREE.Vector3();
 	var color = new THREE.Color();
 
-	this.spawnParticle = function( options ) {
+	this.spawnParticle = function ( options ) {
 
 		var positionStartAttribute = this.particleShaderGeo.getAttribute( 'positionStart' );
 		var startTimeAttribute = this.particleShaderGeo.getAttribute( 'startTime' );
@@ -414,7 +414,7 @@ THREE.GPUParticleContainer = function( maxParticles, particleSystem ) {
 
 	};
 
-	this.init = function() {
+	this.init = function () {
 
 		this.particleSystem = new THREE.Points( this.particleShaderGeo, this.particleShaderMat );
 		this.particleSystem.frustumCulled = false;
@@ -422,7 +422,7 @@ THREE.GPUParticleContainer = function( maxParticles, particleSystem ) {
 
 	};
 
-	this.update = function( time ) {
+	this.update = function ( time ) {
 
 		this.time = time;
 		this.particleShaderMat.uniforms.uTime.value = time;
@@ -431,7 +431,7 @@ THREE.GPUParticleContainer = function( maxParticles, particleSystem ) {
 
 	};
 
-	this.geometryUpdate = function() {
+	this.geometryUpdate = function () {
 
 		if ( this.particleUpdate === true ) {
 
@@ -474,13 +474,13 @@ THREE.GPUParticleContainer = function( maxParticles, particleSystem ) {
 				lifeTimeAttribute.updateRange.offset = 0;
 
 				// Use -1 to update the entire buffer, see #11476
-				positionStartAttribute.updateRange.count = -1;
-				startTimeAttribute.updateRange.count = -1;
-				velocityAttribute.updateRange.count = -1;
-				turbulenceAttribute.updateRange.count = -1;
-				colorAttribute.updateRange.count = -1;
-				sizeAttribute.updateRange.count = -1;
-				lifeTimeAttribute.updateRange.count = -1;
+				positionStartAttribute.updateRange.count = - 1;
+				startTimeAttribute.updateRange.count = - 1;
+				velocityAttribute.updateRange.count = - 1;
+				turbulenceAttribute.updateRange.count = - 1;
+				colorAttribute.updateRange.count = - 1;
+				sizeAttribute.updateRange.count = - 1;
+				lifeTimeAttribute.updateRange.count = - 1;
 
 			}
 
@@ -499,7 +499,7 @@ THREE.GPUParticleContainer = function( maxParticles, particleSystem ) {
 
 	};
 
-	this.dispose = function() {
+	this.dispose = function () {
 
 		this.particleShaderGeo.dispose();
 

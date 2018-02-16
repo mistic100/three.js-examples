@@ -14,7 +14,7 @@
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.NodeBuilder = function( material ) {
+THREE.NodeBuilder = function ( material ) {
 
 	this.material = material;
 
@@ -31,12 +31,12 @@ THREE.NodeBuilder = function( material ) {
 };
 
 THREE.NodeBuilder.type = {
-	float : 'fv1',
-	vec2 : 'v2',
-	vec3 : 'v3',
-	vec4 : 'v4',
-	mat4 : 'v4',
-	int : 'iv1'
+	float: 'fv1',
+	vec2: 'v2',
+	vec3: 'v3',
+	vec4: 'v4',
+	mat4: 'v4',
+	int: 'iv1'
 };
 
 THREE.NodeBuilder.constructors = [
@@ -57,18 +57,18 @@ THREE.NodeBuilder.prototype = {
 
 	constructor: THREE.NodeBuilder,
 
-	addCache : function( name, requires ) {
+	addCache: function ( name, requires ) {
 
 		this.caches.push( {
-			name : name || '',
-			requires : requires || {}
+			name: name || '',
+			requires: requires || {}
 		} );
 
 		return this.update();
 
 	},
 
-	removeCache : function() {
+	removeCache: function () {
 
 		this.caches.pop();
 
@@ -76,17 +76,17 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	addSlot : function( name ) {
+	addSlot: function ( name ) {
 
 		this.slots.push( {
-			name : name || ''
+			name: name || ''
 		} );
 
 		return this.update();
 
 	},
 
-	removeSlot : function() {
+	removeSlot: function () {
 
 		this.slots.pop();
 
@@ -94,7 +94,7 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	isCache : function( name ) {
+	isCache: function ( name ) {
 
 		var i = this.caches.length;
 
@@ -108,7 +108,7 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	isSlot : function( name ) {
+	isSlot: function ( name ) {
 
 		var i = this.slots.length;
 
@@ -122,7 +122,7 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	update : function() {
+	update: function () {
 
 		var cache = this.caches[ this.caches.length - 1 ];
 		var slot = this.slots[ this.slots.length - 1 ];
@@ -135,7 +135,7 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	require : function( name, node ) {
+	require: function ( name, node ) {
 
 		this.requires[ name ] = node;
 
@@ -143,7 +143,7 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	include : function( node, parent, source ) {
+	include: function ( node, parent, source ) {
 
 		this.material.include( this, node, parent, source );
 
@@ -151,37 +151,37 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	colorToVector : function( color ) {
+	colorToVector: function ( color ) {
 
 		return color.replace( 'r', 'x' ).replace( 'g', 'y' ).replace( 'b', 'z' ).replace( 'a', 'w' );
 
 	},
 
-	getConstructorFromLength : function( len ) {
+	getConstructorFromLength: function ( len ) {
 
 		return THREE.NodeBuilder.constructors[ len - 1 ];
 
 	},
 
-	getFormatName : function( format ) {
+	getFormatName: function ( format ) {
 
 		return format.replace( /c/g, 'v3' ).replace( /fv1/g, 'v1' ).replace( /iv1/g, 'i' );
 
 	},
 
-	isFormatMatrix : function( format ) {
+	isFormatMatrix: function ( format ) {
 
 		return /^m/.test( format );
 
 	},
 
-	getFormatLength : function( format ) {
+	getFormatLength: function ( format ) {
 
 		return parseInt( this.getFormatName( format ).substr( 1 ) );
 
 	},
 
-	getFormatFromLength : function( len ) {
+	getFormatFromLength: function ( len ) {
 
 		if ( len == 1 ) return 'fv1';
 
@@ -189,7 +189,7 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	format : function( code, from, to ) {
+	format: function ( code, from, to ) {
 
 		var format = this.getFormatName( to + '=' + from );
 
@@ -226,13 +226,13 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	getTypeByFormat : function( format ) {
+	getTypeByFormat: function ( format ) {
 
 		return THREE.NodeBuilder.type[ format ] || format;
 
 	},
 
-	getUuid : function( uuid, useCache ) {
+	getUuid: function ( uuid, useCache ) {
 
 		useCache = useCache !== undefined ? useCache : true;
 
@@ -242,25 +242,25 @@ THREE.NodeBuilder.prototype = {
 
 	},
 
-	getElementByIndex : function( index ) {
+	getElementByIndex: function ( index ) {
 
 		return THREE.NodeBuilder.elements[ index ];
 
 	},
 
-	getIndexByElement : function( elm ) {
+	getIndexByElement: function ( elm ) {
 
 		return THREE.NodeBuilder.elements.indexOf( elm );
 
 	},
 
-	isShader : function( shader ) {
+	isShader: function ( shader ) {
 
 		return this.shader == shader;
 
 	},
 
-	setShader : function( shader ) {
+	setShader: function ( shader ) {
 
 		this.shader = shader;
 

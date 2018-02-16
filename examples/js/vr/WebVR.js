@@ -105,6 +105,12 @@ var WEBVR = {
 
 			}, false );
 
+			window.addEventListener( 'vrdisplayactivate', function ( event ) {
+
+				event.display.requestPresent( [ { source: renderer.domElement } ] );
+
+			}, false );
+
 			navigator.getVRDisplays()
 				.then( function ( displays ) {
 

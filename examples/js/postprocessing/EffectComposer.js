@@ -62,7 +62,7 @@ THREE.EffectComposer = function ( renderer, renderTarget ) {
 
 Object.assign( THREE.EffectComposer.prototype, {
 
-	swapBuffers: function() {
+	swapBuffers: function () {
 
 		var tmp = this.readBuffer;
 		this.readBuffer = this.writeBuffer;
@@ -163,7 +163,7 @@ Object.assign( THREE.EffectComposer.prototype, {
 
 		for ( var i = 0; i < this.passes.length; i ++ ) {
 
-			this.passes[i].setSize( width, height );
+			this.passes[ i ].setSize( width, height );
 
 		}
 
@@ -190,7 +190,7 @@ THREE.Pass = function () {
 
 Object.assign( THREE.Pass.prototype, {
 
-	setSize: function( width, height ) {},
+	setSize: function ( width, height ) {},
 
 	render: function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
 

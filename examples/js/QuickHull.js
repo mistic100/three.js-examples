@@ -596,9 +596,9 @@
 
 						if ( maxFace !== null ) {
 
-	          	this.addVertexToFace( vertex, maxFace );
+							this.addVertexToFace( vertex, maxFace );
 
-	        	}
+						}
 
 					}
 

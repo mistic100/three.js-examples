@@ -26,6 +26,7 @@ THREE.StandardNode = function () {
 
 THREE.StandardNode.prototype = Object.create( THREE.GLNode.prototype );
 THREE.StandardNode.prototype.constructor = THREE.StandardNode;
+THREE.StandardNode.prototype.nodeType = "Standard";
 
 THREE.StandardNode.prototype.build = function ( builder ) {
 
@@ -38,7 +39,7 @@ THREE.StandardNode.prototype.build = function ( builder ) {
 
 	material.define( 'ALPHATEST', '0.0' );
 
-	material.requestAttribs.light = true;
+	material.requires.lights = true;
 
 	material.extensions.shaderTextureLOD = true;
 
@@ -178,7 +179,7 @@ THREE.StandardNode.prototype.build = function ( builder ) {
 
 		var clearCoatEnv = useClearCoat && environment ? this.environment.buildCode( builder, 'c', { cache: 'clearCoat', requires: requires, slot: 'environment' } ) : undefined;
 
-		material.requestAttribs.transparent = alpha != undefined;
+		material.requires.transparent = alpha != undefined;
 
 		material.addFragmentPars( [
 
@@ -201,10 +202,10 @@ THREE.StandardNode.prototype.build = function ( builder ) {
 		].join( "\n" ) );
 
 		var output = [
-				// prevent undeclared normal
+			// prevent undeclared normal
 			"	#include <normal_fragment>",
 
-				// prevent undeclared material
+			// prevent undeclared material
 			"	PhysicalMaterial material;",
 			"	material.diffuseColor = vec3( 1.0 );",
 
@@ -403,6 +404,49 @@ THREE.StandardNode.prototype.build = function ( builder ) {
 	}
 
 	return code;
+
+};
+
+THREE.StandardNode.prototype.toJSON = function ( meta ) {
+
+	var data = this.getJSONNode( meta );
+
+	if ( ! data ) {
+
+		data = this.createJSONNode( meta );
+
+		// vertex
+
+		if ( this.transform ) data.transform = this.transform.toJSON( meta ).uuid;
+
+		// fragment
+
+		data.color = this.color.toJSON( meta ).uuid;
+		data.roughness = this.roughness.toJSON( meta ).uuid;
+		data.metalness = this.metalness.toJSON( meta ).uuid;
+
+		if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
+
+		if ( this.normal ) data.normal = this.normal.toJSON( meta ).uuid;
+		if ( this.normalScale ) data.normalScale = this.normalScale.toJSON( meta ).uuid;
+
+		if ( this.clearCoat ) data.clearCoat = this.clearCoat.toJSON( meta ).uuid;
+		if ( this.clearCoatRoughness ) data.clearCoatRoughness = this.clearCoatRoughness.toJSON( meta ).uuid;
+
+		if ( this.reflectivity ) data.reflectivity = this.reflectivity.toJSON( meta ).uuid;
+
+		if ( this.light ) data.light = this.light.toJSON( meta ).uuid;
+
+		if ( this.ao ) data.ao = this.ao.toJSON( meta ).uuid;
+		if ( this.ambient ) data.ambient = this.ambient.toJSON( meta ).uuid;
+		if ( this.shadow ) data.shadow = this.shadow.toJSON( meta ).uuid;
+		if ( this.emissive ) data.emissive = this.emissive.toJSON( meta ).uuid;
+
+		if ( this.environment ) data.environment = this.environment.toJSON( meta ).uuid;
+
+	}
+
+	return data;
 
 };
 }));

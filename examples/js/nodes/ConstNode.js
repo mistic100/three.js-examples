@@ -14,7 +14,7 @@
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.ConstNode = function( src, useDefine ) {
+THREE.ConstNode = function ( src, useDefine ) {
 
 	THREE.TempNode.call( this );
 
@@ -31,18 +31,19 @@ THREE.ConstNode.EPSILON = 'EPSILON';
 
 THREE.ConstNode.prototype = Object.create( THREE.TempNode.prototype );
 THREE.ConstNode.prototype.constructor = THREE.ConstNode;
+THREE.ConstNode.prototype.nodeType = "Const";
 
-THREE.ConstNode.prototype.getType = function( builder ) {
+THREE.ConstNode.prototype.getType = function ( builder ) {
 
 	return builder.getTypeByFormat( this.type );
 
 };
 
-THREE.ConstNode.prototype.eval = function( src, useDefine ) {
+THREE.ConstNode.prototype.eval = function ( src, useDefine ) {
 
 	src = ( src || '' ).trim();
 
-	var name, type, value;
+	var name, type, value = "";
 
 	var rDeclaration = /^([a-z_0-9]+)\s([a-z_0-9]+)\s?\=?\s?(.*?)(\;|$)/i;
 	var match = src.match( rDeclaration );
@@ -68,7 +69,7 @@ THREE.ConstNode.prototype.eval = function( src, useDefine ) {
 
 };
 
-THREE.ConstNode.prototype.build = function( builder, output ) {
+THREE.ConstNode.prototype.build = function ( builder, output ) {
 
 	if ( output === 'source' ) {
 
@@ -94,9 +95,29 @@ THREE.ConstNode.prototype.build = function( builder, output ) {
 
 };
 
-THREE.ConstNode.prototype.generate = function( builder, output ) {
+THREE.ConstNode.prototype.generate = function ( builder, output ) {
 
 	return builder.format( this.name, this.getType( builder ), output );
+
+};
+
+THREE.ConstNode.prototype.toJSON = function ( meta ) {
+
+	var data = this.getJSONNode( meta );
+
+	if ( ! data ) {
+
+		data = this.createJSONNode( meta );
+
+		data.name = this.name;
+		data.out = this.type;
+
+		if ( this.value ) data.value = this.value;
+		if ( data.useDefine === true ) data.useDefine = true;
+
+	}
+
+	return data;
 
 };
 }));

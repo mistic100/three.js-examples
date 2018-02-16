@@ -13,6 +13,7 @@
     "loaders/ctm/CTMWorker.js",
     "loaders/XLoader.js",
     "renderers/RaytracingWorker.js",
+    "workers/OffscreenCanvas.js",
     "Cloth.js",
     "Detector.js"
   ],

@@ -25,10 +25,11 @@ Object.assign( THREE.SEA3D.prototype, {
 
 	_onHead: THREE.SEA3D.prototype.onHead,
 	_updateTransform: THREE.SEA3D.prototype.updateTransform,
+	_readMorph: THREE.SEA3D.prototype.readMorph,
 	_readVertexAnimation: THREE.SEA3D.prototype.readVertexAnimation,
 	_readGeometryBuffer: THREE.SEA3D.prototype.readGeometryBuffer,
 	_readLine: THREE.SEA3D.prototype.readLine,
-	_getAnimationType: THREE.SEA3D.prototype.getAnimationType,
+	_getModifier: THREE.SEA3D.prototype.getModifier,
 	_readAnimation: THREE.SEA3D.prototype.readAnimation
 
 } );
@@ -41,9 +42,7 @@ THREE.SEA3D.prototype.isLegacy = function ( sea ) {
 
 	var sea3d = sea.sea3d;
 
-	if ( sea3d.sign == 'S3D' && ! sea._legacy ) {
-
-		sea._legacy = sea3d.typeUnique[ sea.type ] == true;
+	if ( sea3d.sign === "S3D" ) {
 
 		return sea3d.config.legacy;
 
@@ -64,6 +63,20 @@ THREE.SEA3D.prototype.flipVec3 = function ( v ) {
 		v[ i ] = - v[ i ];
 
 		i += 3;
+
+	}
+
+	return v;
+
+};
+
+THREE.SEA3D.prototype.addVector = function ( v, t ) {
+
+	if ( ! v ) return;
+
+	for ( var i = 0; i < v.length; i ++ ) {
+
+		v[ i ] += t[ i ];
 
 	}
 
@@ -411,11 +424,13 @@ THREE.SEA3D.prototype.readAnimation = function ( sea ) {
 
 };
 
-THREE.SEA3D.prototype.getAnimationType = function ( req ) {
+THREE.SEA3D.prototype.getModifier = function ( req ) {
 
 	var sea = req.sea;
 
-	if ( this.isLegacy( sea ) ) {
+	if ( this.isLegacy( sea ) && ! sea.done ) {
+
+		sea.done = true;
 
 		switch ( sea.type ) {
 
@@ -428,6 +443,8 @@ THREE.SEA3D.prototype.getAnimationType = function ( req ) {
 				break;
 
 			case SEA3D.Animation.prototype.type:
+			case SEA3D.MorphAnimation.prototype.type:
+			case SEA3D.UVWAnimation.prototype.type:
 
 				if ( req.scope instanceof THREE.Object3D ) {
 
@@ -441,11 +458,17 @@ THREE.SEA3D.prototype.getAnimationType = function ( req ) {
 
 				break;
 
+			case SEA3D.Morph.prototype.type:
+
+				this.readMorphLegacy( sea, req.geometry );
+
+				break;
+
 		}
 
 	}
 
-	return this._getAnimationType( req );
+	return this._getModifier( req );
 
 };
 
@@ -506,7 +529,7 @@ THREE.SEA3D.prototype.readSkeleton = function () {
 
 			// get world inverse matrix
 
-			mtx_tmp_inv.elements = bone.inverseBindMatrix;
+			mtx_tmp_inv.fromArray( bone.inverseBindMatrix );
 
 			// convert to world matrix
 
@@ -520,7 +543,7 @@ THREE.SEA3D.prototype.readSkeleton = function () {
 
 				// to world
 
-				mtx_tmp_inv.elements = sea.joint[ bone.parentIndex ].inverseBindMatrix;
+				mtx_tmp_inv.fromArray( sea.joint[ bone.parentIndex ].inverseBindMatrix );
 				mtx_parent.getInverse( mtx_tmp_inv );
 
 				// convert parent to three.js order
@@ -549,7 +572,10 @@ THREE.SEA3D.prototype.readSkeleton = function () {
 
 		}
 
-		return sea.tag = bones;
+		this.domain.bones = this.bones = this.bones || [];
+		this.bones.push( this.objects[ sea.name + '.sklq' ] = sea.tag = bones );
+
+		return bones;
 
 	};
 
@@ -607,7 +633,7 @@ THREE.SEA3D.prototype.readSkeletonAnimationLegacy = function () {
 
 						// to global
 
-						mtx_tmp_inv.elements = skl.joint[ bone.parentIndex ].inverseBindMatrix;
+						mtx_tmp_inv.fromArray( skl.joint[ bone.parentIndex ].inverseBindMatrix );
 
 						mtx_parent.getInverse( mtx_tmp_inv );
 
@@ -662,6 +688,34 @@ THREE.SEA3D.prototype.readSkeletonAnimationLegacy = function () {
 
 }();
 
+THREE.SEA3D.prototype.readMorphLegacy = function ( sea, geo ) {
+
+	for ( var i = 0; i < sea.node.length; i ++ ) {
+
+		var node = sea.node[ i ];
+
+		this.flipVec3( node.vertex );
+		this.flipVec3( node.normal );
+
+		this.addVector( node.vertex, geo.vertex );
+		this.addVector( node.normal, geo.normal );
+
+	}
+
+	this._readMorph( sea );
+
+};
+
+THREE.SEA3D.prototype.readMorph = function ( sea ) {
+
+	if ( ! this.isLegacy( sea ) ) {
+
+		this._readMorph( sea );
+
+	}
+
+};
+
 THREE.SEA3D.prototype.readVertexAnimation = function ( sea ) {
 
 	if ( this.isLegacy( sea ) ) {
@@ -685,8 +739,8 @@ THREE.SEA3D.prototype.readGeometryBuffer = function ( sea ) {
 
 	if ( this.isLegacy( sea ) ) {
 
-		this.flipVec3( sea.vertex, true );
-		this.flipVec3( sea.normal, true );
+		this.flipVec3( sea.vertex );
+		this.flipVec3( sea.normal );
 
 		this.flipIndexes( sea.indexes );
 

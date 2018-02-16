@@ -14,7 +14,7 @@
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.NormalNode = function( scope ) {
+THREE.NormalNode = function ( scope ) {
 
 	THREE.TempNode.call( this, 'v3' );
 
@@ -28,19 +28,22 @@ THREE.NormalNode.VIEW = 'view';
 
 THREE.NormalNode.prototype = Object.create( THREE.TempNode.prototype );
 THREE.NormalNode.prototype.constructor = THREE.NormalNode;
+THREE.NormalNode.prototype.nodeType = "Normal";
 
-THREE.NormalNode.prototype.isShared = function( builder ) {
+THREE.NormalNode.prototype.isShared = function ( builder ) {
 
 	switch ( this.scope ) {
+
 		case THREE.NormalNode.WORLD:
 			return true;
+
 	}
 
 	return false;
 
 };
 
-THREE.NormalNode.prototype.generate = function( builder, output ) {
+THREE.NormalNode.prototype.generate = function ( builder, output ) {
 
 	var material = builder.material;
 	var result;
@@ -49,7 +52,7 @@ THREE.NormalNode.prototype.generate = function( builder, output ) {
 
 		case THREE.NormalNode.LOCAL:
 
-			material.requestAttribs.normal = true;
+			material.requires.normal = true;
 
 			if ( builder.isShader( 'vertex' ) ) result = 'normal';
 			else result = 'vObjectNormal';
@@ -58,7 +61,7 @@ THREE.NormalNode.prototype.generate = function( builder, output ) {
 
 		case THREE.NormalNode.WORLD:
 
-			material.requestAttribs.worldNormal = true;
+			material.requires.worldNormal = true;
 
 			if ( builder.isShader( 'vertex' ) ) result = '( modelMatrix * vec4( objectNormal, 0.0 ) ).xyz';
 			else result = 'vWNormal';
@@ -74,6 +77,22 @@ THREE.NormalNode.prototype.generate = function( builder, output ) {
 	}
 
 	return builder.format( result, this.getType( builder ), output );
+
+};
+
+THREE.NormalNode.prototype.toJSON = function ( meta ) {
+
+	var data = this.getJSONNode( meta );
+
+	if ( ! data ) {
+
+		data = this.createJSONNode( meta );
+
+		data.scope = this.scope;
+
+	}
+
+	return data;
 
 };
 }));

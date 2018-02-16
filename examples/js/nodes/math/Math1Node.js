@@ -14,7 +14,7 @@
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.Math1Node = function( a, method ) {
+THREE.Math1Node = function ( a, method ) {
 
 	THREE.TempNode.call( this );
 
@@ -51,19 +51,22 @@ THREE.Math1Node.INVERT = 'invert';
 
 THREE.Math1Node.prototype = Object.create( THREE.TempNode.prototype );
 THREE.Math1Node.prototype.constructor = THREE.Math1Node;
+THREE.Math1Node.prototype.nodeType = "Math1";
 
-THREE.Math1Node.prototype.getType = function( builder ) {
+THREE.Math1Node.prototype.getType = function ( builder ) {
 
 	switch ( this.method ) {
+
 		case THREE.Math1Node.LENGTH:
 			return 'fv1';
+
 	}
 
 	return this.a.getType( builder );
 
 };
 
-THREE.Math1Node.prototype.generate = function( builder, output ) {
+THREE.Math1Node.prototype.generate = function ( builder, output ) {
 
 	var material = builder.material;
 
@@ -84,9 +87,27 @@ THREE.Math1Node.prototype.generate = function( builder, output ) {
 		default:
 			result = this.method + '(' + result + ')';
 			break;
+
 	}
 
 	return builder.format( result, type, output );
+
+};
+
+THREE.Math1Node.prototype.toJSON = function ( meta ) {
+
+	var data = this.getJSONNode( meta );
+
+	if ( ! data ) {
+
+		data = this.createJSONNode( meta );
+
+		data.a = this.a.toJSON( meta ).uuid;
+		data.method = this.method;
+
+	}
+
+	return data;
 
 };
 }));

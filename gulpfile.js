@@ -17,7 +17,7 @@ const THREE_PATH = 'node_modules/three';
  * Copy license file
  */
 gulp.task('licence', () => {
-    gulp.src(`${THREE_PATH}/LICENSE`)
+    return gulp.src(`${THREE_PATH}/LICENSE`)
         .pipe(gulp.dest('.'));
 });
 
@@ -29,7 +29,7 @@ gulp.task('build', () => {
         return path.replace(/\\/g, '/');
     }
 
-    gulp.src([`${THREE_PATH}/examples/js/**/*.js`].concat(
+    return gulp.src([`${THREE_PATH}/examples/js/**/*.js`].concat(
         _.map(config.ignore, map => `!${THREE_PATH}/examples/js/${map}`)
     ))
         .pipe(insert.prepend(file => {
@@ -72,7 +72,7 @@ gulp.task('build', () => {
  * Remove old files
  */
 gulp.task('clean', () => {
-    gulp.src('examples/js/**/*.js', { read: false })
+    return gulp.src('examples/js/**/*.js', {read: false})
         .pipe(filter(file => {
             var filePath = path.relative(__dirname, file.path);
             return !fs.existsSync(`${THREE_PATH}/${filePath}`);
@@ -80,4 +80,4 @@ gulp.task('clean', () => {
         .pipe(clean());
 });
 
-gulp.task('default', ['licence', 'build', 'clean']);
+gulp.task('default', gulp.series('licence', 'build', 'clean'));
