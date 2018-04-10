@@ -54,7 +54,7 @@ THREE.DaydreamController = function () {
 
 	};
 
-	this.getTouchPadState = function () {
+	this.getTouchpadState = function () {
 
 		return touchpadIsPressed;
 
@@ -112,6 +112,15 @@ THREE.DaydreamController = function () {
 			scope.visible = false;
 
 		}
+
+	};
+
+	// DEPRECATED
+
+	this.getTouchPadState = function () {
+
+		console.warn( 'THREE.DaydreamController: getTouchPadState() is now getTouchpadState()' );
+		return touchpadIsPressed;
 
 	};
 

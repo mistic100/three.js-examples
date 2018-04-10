@@ -132,7 +132,7 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	function init( parameters ) {
 
-		_this.renderer = parameters.renderer !== undefined ? parameters.renderer : new THREE.WebGLRenderer( { antialias: false } );
+		_this.renderer = parameters.renderer !== undefined ? parameters.renderer : new THREE.WebGLRenderer();
 		_this.domElement = _this.renderer.domElement;
 
 		_gl = _this.renderer.context;

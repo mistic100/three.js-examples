@@ -447,6 +447,11 @@
 
 			parameters.color = new THREE.Color().fromArray( properties.Diffuse.value );
 
+		} else if ( properties.DiffuseColor && properties.DiffuseColor.type === 'Color' ) {
+
+			// The blender exporter exports diffuse here instead of in properties.Diffuse
+			parameters.color = new THREE.Color().fromArray( properties.DiffuseColor.value );
+
 		}
 		if ( properties.DisplacementFactor ) {
 
@@ -462,6 +467,11 @@
 
 			parameters.specular = new THREE.Color().fromArray( properties.Specular.value );
 
+		} else if ( properties.SpecularColor && properties.SpecularColor.type === 'Color' ) {
+
+			// The blender exporter exports specular color here instead of in properties.Specular
+			parameters.emissive = new THREE.Color().fromArray( properties.SpecularColor.value );
+
 		}
 		if ( properties.Shininess ) {
 
@@ -471,6 +481,11 @@
 		if ( properties.Emissive ) {
 
 			parameters.emissive = new THREE.Color().fromArray( properties.Emissive.value );
+
+		} else if ( properties.EmissiveColor && properties.EmissiveColor.type === 'Color' ) {
+
+			// The blender exporter exports emissive color here instead of in properties.Emissive
+			parameters.emissive = new THREE.Color().fromArray( properties.EmissiveColor.value );
 
 		}
 		if ( properties.EmissiveFactor ) {
@@ -715,6 +730,7 @@
 		// For now just assume one model and get the preRotations from that
 		var modelNode = modelNodes[ 0 ];
 
+
 		if ( 'GeometricRotation' in modelNode ) {
 
 			var array = modelNode.GeometricRotation.value.map( THREE.Math.degToRad );
@@ -727,6 +743,12 @@
 		if ( 'GeometricTranslation' in modelNode ) {
 
 			preTransform.setPosition( new THREE.Vector3().fromArray( modelNode.GeometricTranslation.value ) );
+
+		}
+
+		if ( 'GeometricScaling' in modelNode ) {
+
+			preTransform.scale( new THREE.Vector3().fromArray( modelNode.GeometricScaling.value ) );
 
 		}
 
@@ -1753,7 +1775,7 @@
 
 				} else {
 
-					distance = lightAttribute.FarAttenuationEnd.value / 1000;
+					distance = lightAttribute.FarAttenuationEnd.value;
 
 				}
 
@@ -2001,7 +2023,7 @@
 
 			var rotation = modelNode.Lcl_Rotation.value.map( THREE.Math.degToRad );
 			rotation.push( 'ZYX' );
-			model.rotation.fromArray( rotation );
+			model.quaternion.setFromEuler( new THREE.Euler().fromArray( rotation ) );
 
 		}
 
@@ -2019,9 +2041,7 @@
 			var preRotations = new THREE.Euler().fromArray( array );
 
 			preRotations = new THREE.Quaternion().setFromEuler( preRotations );
-			var currentRotation = new THREE.Quaternion().setFromEuler( model.rotation );
-			preRotations.multiply( currentRotation );
-			model.rotation.setFromQuaternion( preRotations, 'ZYX' );
+			model.quaternion.premultiply( preRotations );
 
 		}
 

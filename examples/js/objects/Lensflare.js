@@ -47,8 +47,6 @@ THREE.Lensflare = function () {
 
 	var geometry = THREE.Lensflare.Geometry;
 
-	var shader = THREE.Lensflare.Shader;
-
 	var material1a = new THREE.RawShaderMaterial( {
 		uniforms: {
 			'scale': { value: null },
@@ -266,6 +264,12 @@ THREE.Lensflare = function () {
 
 		tempMap.dispose();
 		occlusionMap.dispose();
+
+		for ( var i = 0, l = elements.length; i < l; i ++ ) {
+
+			elements[ i ].texture.dispose();
+
+		}
 
 	};
 

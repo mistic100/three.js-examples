@@ -194,7 +194,7 @@ THREE.StandardNode.prototype.build = function ( builder ) {
 			"#include <common>",
 			"#include <fog_pars_fragment>",
 			"#include <bsdfs>",
-			"#include <lights_pars>",
+			"#include <lights_pars_begin>",
 			"#include <lights_physical_pars_fragment>",
 			"#include <shadowmap_pars_fragment>",
 			"#include <logdepthbuf_pars_fragment>",
@@ -203,7 +203,7 @@ THREE.StandardNode.prototype.build = function ( builder ) {
 
 		var output = [
 			// prevent undeclared normal
-			"	#include <normal_fragment>",
+			"	#include <normal_fragment_begin>",
 
 			// prevent undeclared material
 			"	PhysicalMaterial material;",
@@ -299,7 +299,8 @@ THREE.StandardNode.prototype.build = function ( builder ) {
 		}
 
 		output.push(
-			"#include <lights_template>"
+			"#include <lights_fragment_begin>",
+			"#include <lights_fragment_end>"
 		);
 
 		if ( light ) {
@@ -367,12 +368,8 @@ THREE.StandardNode.prototype.build = function ( builder ) {
 
 				output.push(
 					clearCoatEnv.code,
-					"vec3 clearCoatRadiance = " + clearCoatEnv.result + ";"
+					"clearCoatRadiance += " + clearCoatEnv.result + ";"
 				);
-
-			} else {
-
-				output.push( "vec3 clearCoatRadiance = vec3( 0.0 );" );
 
 			}
 

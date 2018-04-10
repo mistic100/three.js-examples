@@ -91,11 +91,6 @@ THREE.SVGRenderer = function () {
 
 	};
 
-	// WebGLRenderer compatibility
-
-	this.supportsVertexTextures = function () {};
-	this.setFaceCulling = function () {};
-
 	this.setClearColor = function ( color, alpha ) {
 
 		_clearColor.set( color );
