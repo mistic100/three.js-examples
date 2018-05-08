@@ -77,6 +77,7 @@ THREE.BokehShader = {
 	fragmentShader: [
 
 		"#include <common>",
+		"#include <packing>",
 
 		"varying vec2 vUv;",
 
@@ -153,6 +154,14 @@ THREE.BokehShader = {
 
 		"//------------------------------------------",
 
+		"float getDepth( const in vec2 screenPosition ) {",
+		"	#if DEPTH_PACKING == 1",
+		"	return unpackRGBAToDepth( texture2D( tDepth, screenPosition ) );",
+		"	#else",
+		"	return texture2D( tDepth, screenPosition ).x;",
+		"	#endif",
+		"}",
+
 		"float penta(vec2 coords) {",
 			"//pentagonal shape",
 			"float scale = float(rings) - 1.3;",
@@ -214,7 +223,7 @@ THREE.BokehShader = {
 
 
 			"for( int i=0; i<9; i++ ) {",
-				"float tmp = texture2D(tDepth, coords + offset[i]).r;",
+				"float tmp = getDepth( coords + offset[ i ] );",
 				"d += tmp * kernel[i];",
 			"}",
 
@@ -276,7 +285,7 @@ THREE.BokehShader = {
 		"void main() {",
 			"//scene depth calculation",
 
-			"float depth = linearize(texture2D(tDepth,vUv.xy).x);",
+			"float depth = linearize( getDepth( vUv.xy ) );",
 
 			"// Blur depth?",
 			"if (depthblur) {",
@@ -289,7 +298,7 @@ THREE.BokehShader = {
 
 			"if (shaderFocus) {",
 
-				"fDepth = linearize(texture2D(tDepth,focusCoords).x);",
+				"fDepth = linearize( getDepth( focusCoords ) );",
 
 			"}",
 

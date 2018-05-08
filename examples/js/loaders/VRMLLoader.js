@@ -66,12 +66,6 @@ THREE.VRMLLoader.prototype = {
 		var textureLoader = new THREE.TextureLoader( this.manager );
 		textureLoader.setCrossOrigin( this.crossOrigin );
 
-		function parseV1() {
-
-			console.warn( 'THREE.VRMLLoader: V1.0 not supported yet.' );
-
-		}
-
 		function parseV2( lines, scene ) {
 
 			var defines = {};
@@ -1115,7 +1109,7 @@ THREE.VRMLLoader.prototype = {
 
 		if ( /V1.0/.exec( header ) ) {
 
-			parseV1( lines, scene );
+			console.warn( 'THREE.VRMLLoader: V1.0 not supported yet.' );
 
 		} else if ( /V2.0/.exec( header ) ) {
 
