@@ -67,8 +67,7 @@ THREE.Reflector = function ( geometry, options ) {
 	var material = new THREE.ShaderMaterial( {
 		uniforms: THREE.UniformsUtils.clone( shader.uniforms ),
 		fragmentShader: shader.fragmentShader,
-		vertexShader: shader.vertexShader,
-
+		vertexShader: shader.vertexShader
 	} );
 
 	material.uniforms.tDiffuse.value = renderTarget.texture;
@@ -76,6 +75,7 @@ THREE.Reflector = function ( geometry, options ) {
 	material.uniforms.textureMatrix.value = textureMatrix;
 
 	this.material = material;
+	this.renderOrder = - Infinity; // render first
 
 	this.onBeforeRender = function ( renderer, scene, camera ) {
 

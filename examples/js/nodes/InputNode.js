@@ -54,7 +54,7 @@ THREE.InputNode.prototype.generate = function ( builder, output, uuid, type, ns,
 
 			if ( ! data.vertex ) {
 
-				data.vertex = material.createVertexUniform( type, this.value, ns, needsUpdate );
+				data.vertex = material.createVertexUniform( type, this, ns, needsUpdate );
 
 			}
 
@@ -64,7 +64,7 @@ THREE.InputNode.prototype.generate = function ( builder, output, uuid, type, ns,
 
 			if ( ! data.fragment ) {
 
-				data.fragment = material.createFragmentUniform( type, this.value, ns, needsUpdate );
+				data.fragment = material.createFragmentUniform( type, this, ns, needsUpdate );
 
 			}
 

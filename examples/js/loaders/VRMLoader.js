@@ -42,7 +42,13 @@ THREE.VRMLoader = ( function () {
 
 		load: function ( url, onLoad, onProgress, onError ) {
 
-			this.gltfLoader.load( url, onLoad, onProgress, onError );
+			var scope = this;
+
+			this.gltfLoader.load( url, function ( gltf ) {
+
+				scope.parse( gltf, onLoad );
+
+			}, onProgress, onError );
 
 		},
 
@@ -64,6 +70,18 @@ THREE.VRMLoader = ( function () {
 
 			this.glTFLoader.setDRACOLoader( dracoLoader );
 			return this;
+
+		},
+
+		parse: function ( gltf, onLoad ) {
+
+			var gltfParser = gltf.parser;
+			var gltfExtensions = gltf.userData.gltfExtensions || {};
+			var vrmExtension = gltfExtensions.VRM || {};
+
+			// handle VRM Extension here
+
+			onLoad( gltf );
 
 		}
 
