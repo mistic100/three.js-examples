@@ -20,7 +20,9 @@
  */
 
 
-THREE.KTXLoader = function () {
+THREE.KTXLoader = function ( manager ) {
+
+	THREE.CompressedTextureLoader.call( this, manager );
 
 	this._parser = THREE.KTXLoader.parse;
 

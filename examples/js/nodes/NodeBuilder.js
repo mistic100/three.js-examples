@@ -14,9 +14,10 @@
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.NodeBuilder = function ( material ) {
+THREE.NodeBuilder = function ( material, renderer ) {
 
 	this.material = material;
+	this.renderer = renderer;
 
 	this.caches = [];
 	this.slots = [];

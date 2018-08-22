@@ -14,7 +14,9 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-THREE.DDSLoader = function () {
+THREE.DDSLoader = function ( manager ) {
+
+	THREE.CompressedTextureLoader.call( this, manager );
 
 	this._parser = THREE.DDSLoader.parse;
 
