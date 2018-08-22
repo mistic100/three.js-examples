@@ -34,6 +34,7 @@ THREE.TGALoader.prototype = {
 
 		var loader = new THREE.FileLoader( this.manager );
 		loader.setResponseType( 'arraybuffer' );
+		loader.setPath( this.path );
 
 		loader.load( url, function ( buffer ) {
 
@@ -546,6 +547,13 @@ THREE.TGALoader.prototype = {
 		context.putImageData( imageData, 0, 0 );
 
 		return canvas;
+
+	},
+
+	setPath: function ( value ) {
+
+		this.path = value;
+		return this;
 
 	}
 

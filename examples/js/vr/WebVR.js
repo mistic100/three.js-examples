@@ -56,7 +56,7 @@ var WEBVR = {
 				session.addEventListener( 'end', onSessionEnded );
 
 				renderer.vr.setSession( session, options );
-				button.textContent = 'EXIT XR';
+				button.textContent = 'EXIT VR';
 
 				currentSession = session;
 
@@ -67,7 +67,7 @@ var WEBVR = {
 				currentSession.removeEventListener( 'end', onSessionEnded );
 
 				renderer.vr.setSession( null );
-				button.textContent = 'ENTER XR';
+				button.textContent = 'ENTER VR';
 
 				currentSession = null;
 
@@ -81,7 +81,7 @@ var WEBVR = {
 			button.style.left = 'calc(50% - 50px)';
 			button.style.width = '100px';
 
-			button.textContent = 'ENTER XR';
+			button.textContent = 'ENTER VR';
 
 			button.onmouseenter = function () { button.style.opacity = '1.0'; };
 			button.onmouseleave = function () { button.style.opacity = '0.5'; };
@@ -90,7 +90,7 @@ var WEBVR = {
 
 				if ( currentSession === null ) {
 
-					device.requestSession( { exclusive: true } ).then( onSessionStarted );
+					device.requestSession( { immersive: true, exclusive: true /* DEPRECATED */ } ).then( onSessionStarted );
 
 				} else {
 
@@ -130,7 +130,7 @@ var WEBVR = {
 			element.style.padding = '12px 6px';
 			element.style.border = '1px solid #fff';
 			element.style.borderRadius = '4px';
-			element.style.background = 'transparent';
+			element.style.background = 'rgba(0,0,0,0.1)';
 			element.style.color = '#fff';
 			element.style.font = 'normal 13px sans-serif';
 			element.style.textAlign = 'center';
@@ -149,11 +149,9 @@ var WEBVR = {
 
 			navigator.xr.requestDevice().then( function ( device ) {
 
-				device.supportsSession( { exclusive: true } ).then( function () {
-
-					showEnterXR( device );
-
-				} ).catch( showVRNotFound );
+				device.supportsSession( { immersive: true, exclusive: true /* DEPRECATED */ } )
+					.then( function () { showEnterXR( device ); } )
+					.catch( showVRNotFound );
 
 			} ).catch( showVRNotFound );
 
@@ -203,7 +201,7 @@ var WEBVR = {
 
 					}
 
-				} );
+				} ).catch( showVRNotFound );
 
 			return button;
 

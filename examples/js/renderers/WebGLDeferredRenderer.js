@@ -809,7 +809,7 @@ THREE.WebGLDeferredRenderer = function ( parameters ) {
 
 	function createDeferredPointLight( light ) {
 
-		var mesh = createDeferredLightMesh( light, new THREE.SphereGeometry( 1, 16, 8 ) );
+		var mesh = createDeferredLightMesh( light, new THREE.SphereBufferGeometry( 1, 16, 8 ) );
 		mesh.onBeforeRender = updateDeferredPointLightUniforms;
 		return mesh;
 

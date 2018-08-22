@@ -1,22 +1,12 @@
-(function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define('three.VelocityNode', ['three'], factory);
-    }
-    else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-        module.exports = factory(require('three'));
-    }
-    else {
-        factory(root.THREE);
-    }
-}(this, function(THREE) {
-
 /**
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.VelocityNode = function ( target, params ) {
+import { Vector3Node } from '../inputs/Vector3Node.js';
 
-	THREE.Vector3Node.call( this );
+function VelocityNode( target, params ) {
+
+	Vector3Node.call( this );
 
 	this.params = {};
 
@@ -25,19 +15,19 @@ THREE.VelocityNode = function ( target, params ) {
 	this.setTarget( target );
 	this.setParams( params );
 
-};
+}
 
-THREE.VelocityNode.prototype = Object.create( THREE.Vector3Node.prototype );
-THREE.VelocityNode.prototype.constructor = THREE.VelocityNode;
-THREE.VelocityNode.prototype.nodeType = "Velocity";
+VelocityNode.prototype = Object.create( Vector3Node.prototype );
+VelocityNode.prototype.constructor = VelocityNode;
+VelocityNode.prototype.nodeType = "Velocity";
 
-THREE.VelocityNode.prototype.isReadonly = function ( builder ) {
+VelocityNode.prototype.isReadonly = function ( builder ) {
 
 	return false;
 
 };
 
-THREE.VelocityNode.prototype.setParams = function ( params ) {
+VelocityNode.prototype.setParams = function ( params ) {
 
 	switch ( this.params.type ) {
 
@@ -73,7 +63,7 @@ THREE.VelocityNode.prototype.setParams = function ( params ) {
 
 };
 
-THREE.VelocityNode.prototype.setTarget = function ( target ) {
+VelocityNode.prototype.setTarget = function ( target ) {
 
 	if ( this.target ) {
 
@@ -93,7 +83,7 @@ THREE.VelocityNode.prototype.setTarget = function ( target ) {
 
 };
 
-THREE.VelocityNode.prototype.updateFrameVelocity = function ( frame ) {
+VelocityNode.prototype.updateFrameVelocity = function ( frame ) {
 
 	if ( this.target ) {
 
@@ -105,7 +95,7 @@ THREE.VelocityNode.prototype.updateFrameVelocity = function ( frame ) {
 
 };
 
-THREE.VelocityNode.prototype.updateFrame = function ( frame ) {
+VelocityNode.prototype.updateFrame = function ( frame ) {
 
 	this.updateFrameVelocity( frame );
 
@@ -152,7 +142,17 @@ THREE.VelocityNode.prototype.updateFrame = function ( frame ) {
 
 };
 
-THREE.VelocityNode.prototype.toJSON = function ( meta ) {
+VelocityNode.prototype.copy = function ( source ) {
+
+	Vector3Node.prototype.copy.call( this, source );
+
+	if ( source.target ) object.setTarget( source.target );
+
+	object.setParams( source.params );
+
+};
+
+VelocityNode.prototype.toJSON = function ( meta ) {
 
 	var data = this.getJSONNode( meta );
 
@@ -170,4 +170,5 @@ THREE.VelocityNode.prototype.toJSON = function ( meta ) {
 	return data;
 
 };
-}));
+
+export { VelocityNode };

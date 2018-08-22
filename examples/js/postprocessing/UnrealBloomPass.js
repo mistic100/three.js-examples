@@ -12,7 +12,7 @@
 
 /**
  * @author spidersharma / http://eduperiment.com/
- * 
+ *
  * Inspired from Unreal Engine
  * https://docs.unrealengine.com/latest/INT/Engine/Rendering/PostProcessEffects/Bloom/
  */
@@ -24,6 +24,9 @@ THREE.UnrealBloomPass = function ( resolution, strength, radius, threshold ) {
 	this.radius = radius;
 	this.threshold = threshold;
 	this.resolution = ( resolution !== undefined ) ? new THREE.Vector2( resolution.x, resolution.y ) : new THREE.Vector2( 256, 256 );
+
+	// create color only once here, reuse it later inside the render function
+	this.clearColor = new THREE.Color( 0, 0, 0 );
 
 	// render targets
 	var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat };
@@ -201,7 +204,7 @@ THREE.UnrealBloomPass.prototype = Object.assign( Object.create( THREE.Pass.proto
 		var oldAutoClear = renderer.autoClear;
 		renderer.autoClear = false;
 
-		renderer.setClearColor( new THREE.Color( 0, 0, 0 ), 0 );
+		renderer.setClearColor( this.clearColor, 0 );
 
 		if ( maskActive ) renderer.context.disable( renderer.context.STENCIL_TEST );
 

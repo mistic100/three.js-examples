@@ -10,6 +10,7 @@
     "SimplexNoise.js": ["SimplexNoise"]
   },
   "noUMD": [
+    "nodes/**/*.js",
     "loaders/ctm/CTMWorker.js",
     "loaders/XLoader.js",
     "renderers/RaytracingWorker.js",

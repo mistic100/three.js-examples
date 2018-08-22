@@ -1,40 +1,36 @@
-(function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define('three.FloatNode', ['three'], factory);
-    }
-    else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-        module.exports = factory(require('three'));
-    }
-    else {
-        factory(root.THREE);
-    }
-}(this, function(THREE) {
-
 /**
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.FloatNode = function ( value ) {
+import { InputNode } from '../core/InputNode.js';
 
-	THREE.InputNode.call( this, 'fv1' );
+function FloatNode( value ) {
+
+	InputNode.call( this, 'f' );
 
 	this.value = value || 0;
 
-};
+}
 
-THREE.FloatNode.prototype = Object.create( THREE.InputNode.prototype );
-THREE.FloatNode.prototype.constructor = THREE.FloatNode;
-THREE.FloatNode.prototype.nodeType = "Float";
+FloatNode.prototype = Object.create( InputNode.prototype );
+FloatNode.prototype.constructor = FloatNode;
+FloatNode.prototype.nodeType = "Float";
 
-THREE.FloatNode.prototype.generateReadonly = function ( builder, output, uuid, type, ns, needsUpdate ) {
+FloatNode.prototype.generateReadonly = function ( builder, output, uuid, type, ns, needsUpdate ) {
 
-	var val = this.value;
-
-	return builder.format( Math.floor( val ) !== val ? val : val + ".0", type, output );
+	return builder.format( this.value + ( this.value % 1 ? '' : '.0' ), type, output );
 
 };
 
-THREE.FloatNode.prototype.toJSON = function ( meta ) {
+FloatNode.prototype.copy = function ( source ) {
+
+	InputNode.prototype.copy.call( this, source );
+
+	this.value = source.value;
+
+};
+
+FloatNode.prototype.toJSON = function ( meta ) {
 
 	var data = this.getJSONNode( meta );
 
@@ -51,4 +47,5 @@ THREE.FloatNode.prototype.toJSON = function ( meta ) {
 	return data;
 
 };
-}));
+
+export { FloatNode };

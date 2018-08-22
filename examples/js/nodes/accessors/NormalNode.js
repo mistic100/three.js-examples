@@ -1,40 +1,32 @@
-(function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define('three.NormalNode', ['three'], factory);
-    }
-    else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-        module.exports = factory(require('three'));
-    }
-    else {
-        factory(root.THREE);
-    }
-}(this, function(THREE) {
-
 /**
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.NormalNode = function ( scope ) {
+import { TempNode } from '../core/TempNode.js';
+import { NodeLib } from '../core/NodeLib.js';
 
-	THREE.TempNode.call( this, 'v3' );
+function NormalNode( scope ) {
 
-	this.scope = scope || THREE.NormalNode.LOCAL;
+	TempNode.call( this, 'v3' );
 
-};
+	this.scope = scope || NormalNode.LOCAL;
 
-THREE.NormalNode.LOCAL = 'local';
-THREE.NormalNode.WORLD = 'world';
-THREE.NormalNode.VIEW = 'view';
+}
 
-THREE.NormalNode.prototype = Object.create( THREE.TempNode.prototype );
-THREE.NormalNode.prototype.constructor = THREE.NormalNode;
-THREE.NormalNode.prototype.nodeType = "Normal";
+NormalNode.LOCAL = 'local';
+NormalNode.WORLD = 'world';
+NormalNode.VIEW = 'view';
 
-THREE.NormalNode.prototype.isShared = function ( builder ) {
+NormalNode.prototype = Object.create( TempNode.prototype );
+NormalNode.prototype.constructor = NormalNode;
+NormalNode.prototype.nodeType = "Normal";
+
+NormalNode.prototype.isShared = function ( builder ) {
 
 	switch ( this.scope ) {
 
-		case THREE.NormalNode.WORLD:
+		case NormalNode.WORLD:
+
 			return true;
 
 	}
@@ -43,32 +35,29 @@ THREE.NormalNode.prototype.isShared = function ( builder ) {
 
 };
 
-THREE.NormalNode.prototype.generate = function ( builder, output ) {
+NormalNode.prototype.generate = function ( builder, output ) {
 
-	var material = builder.material;
 	var result;
 
 	switch ( this.scope ) {
 
-		case THREE.NormalNode.LOCAL:
+		case NormalNode.LOCAL:
 
-			material.requires.normal = true;
+			builder.requires.normal = true;
 
-			if ( builder.isShader( 'vertex' ) ) result = 'normal';
-			else result = 'vObjectNormal';
-
-			break;
-
-		case THREE.NormalNode.WORLD:
-
-			material.requires.worldNormal = true;
-
-			if ( builder.isShader( 'vertex' ) ) result = '( modelMatrix * vec4( objectNormal, 0.0 ) ).xyz';
-			else result = 'vWNormal';
+			result = 'normal';
 
 			break;
 
-		case THREE.NormalNode.VIEW:
+		case NormalNode.WORLD:
+
+			builder.requires.worldNormal = true;
+
+			result = builder.isShader( 'vertex' ) ? '( modelMatrix * vec4( objectNormal, 0.0 ) ).xyz' : 'vWNormal';
+
+			break;
+
+		case NormalNode.VIEW:
 
 			result = 'vNormal';
 
@@ -80,7 +69,15 @@ THREE.NormalNode.prototype.generate = function ( builder, output ) {
 
 };
 
-THREE.NormalNode.prototype.toJSON = function ( meta ) {
+NormalNode.prototype.copy = function ( source ) {
+
+	TempNode.prototype.copy.call( this, source );
+
+	this.scope = source.scope;
+
+};
+
+NormalNode.prototype.toJSON = function ( meta ) {
 
 	var data = this.getJSONNode( meta );
 
@@ -95,4 +92,23 @@ THREE.NormalNode.prototype.toJSON = function ( meta ) {
 	return data;
 
 };
-}));
+
+NodeLib.addKeyword( 'normal', function () {
+
+	return new NormalNode();
+
+} );
+
+NodeLib.addKeyword( 'worldNormal', function () {
+
+	return new NormalNode( NormalNode.WORLD );
+
+} );
+
+NodeLib.addKeyword( 'viewNormal', function () {
+
+	return new NormalNode( NormalNode.VIEW );
+
+} );
+
+export { NormalNode };

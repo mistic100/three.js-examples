@@ -275,6 +275,7 @@ THREE.Water.WaterShader = {
 
 	fragmentShader: [
 
+		'#include <common>',
 		'#include <fog_pars_fragment>',
 
 		'uniform sampler2D tReflectionMap;',

@@ -1,38 +1,36 @@
-(function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define('three.IntNode', ['three'], factory);
-    }
-    else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-        module.exports = factory(require('three'));
-    }
-    else {
-        factory(root.THREE);
-    }
-}(this, function(THREE) {
-
 /**
  * @author sunag / http://www.sunag.com.br/
  */
 
-THREE.IntNode = function ( value ) {
+import { InputNode } from '../core/InputNode.js';
 
-	THREE.InputNode.call( this, 'iv1' );
+function IntNode( value ) {
+
+	InputNode.call( this, 'i' );
 
 	this.value = Math.floor( value || 0 );
 
-};
+}
 
-THREE.IntNode.prototype = Object.create( THREE.InputNode.prototype );
-THREE.IntNode.prototype.constructor = THREE.IntNode;
-THREE.IntNode.prototype.nodeType = "Int";
+IntNode.prototype = Object.create( InputNode.prototype );
+IntNode.prototype.constructor = IntNode;
+IntNode.prototype.nodeType = "Int";
 
-THREE.IntNode.prototype.generateReadonly = function ( builder, output, uuid, type, ns, needsUpdate ) {
+IntNode.prototype.generateReadonly = function ( builder, output, uuid, type, ns, needsUpdate ) {
 
 	return builder.format( this.value, type, output );
 
 };
 
-THREE.IntNode.prototype.toJSON = function ( meta ) {
+IntNode.prototype.copy = function ( source ) {
+
+	InputNode.prototype.copy.call( this, source );
+
+	this.value = source.value;
+
+};
+
+IntNode.prototype.toJSON = function ( meta ) {
 
 	var data = this.getJSONNode( meta );
 
@@ -49,4 +47,5 @@ THREE.IntNode.prototype.toJSON = function ( meta ) {
 	return data;
 
 };
-}));
+
+export { IntNode };
