@@ -113,16 +113,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	};
 
-	this.handleEvent = function ( event ) {
-
-		if ( typeof this[ event.type ] == 'function' ) {
-
-			this[ event.type ]( event );
-
-		}
-
-	};
-
 	var getMouseOnScreen = ( function () {
 
 		var vector = new THREE.Vector2();
@@ -514,6 +504,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 	function touchstart( event ) {
 
 		if ( _this.enabled === false ) return;
+		
+		event.preventDefault();
 
 		switch ( event.touches.length ) {
 

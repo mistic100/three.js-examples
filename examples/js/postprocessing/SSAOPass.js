@@ -24,7 +24,7 @@
  *  	- Ambient occlusion clamp (numeric value).
  *  - lumInfluence
  *  	- Pixel luminosity influence in AO calculation (numeric value).
- * 
+ *
  * To output to screen set renderToScreens true
  *
  * @author alteredq / http://alteredqualia.com/
@@ -33,7 +33,7 @@
  */
 THREE.SSAOPass = function ( scene, camera, width, height ) {
 
-	if ( THREE.SSAOShader === undefined) {
+	if ( THREE.SSAOShader === undefined ) {
 
 		console.warn( 'THREE.SSAOPass depends on THREE.SSAOShader' );
 		return new THREE.ShaderPass();
@@ -58,7 +58,7 @@ THREE.SSAOPass = function ( scene, camera, width, height ) {
 	//Depth render target
 	this.depthRenderTarget = new THREE.WebGLRenderTarget( this.width, this.height, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
 	//this.depthRenderTarget.texture.name = 'SSAOShader.rt';
-	
+
 	//Shader uniforms
 	this.uniforms[ 'tDepth' ].value = this.depthRenderTarget.texture;
 	this.uniforms[ 'size' ].value.set( this.width, this.height );
@@ -71,37 +71,70 @@ THREE.SSAOPass = function ( scene, camera, width, height ) {
 	this.uniforms[ 'lumInfluence' ].value = 0.7;
 
 	//Setters and getters for uniforms
-	var self = this;
-	Object.defineProperties(this, {
+
+	Object.defineProperties( this, {
 
 		radius: {
-			get: function() { return this.uniforms[ 'radius' ].value; },
-			set: function( value ) { this.uniforms[ 'radius' ].value = value; }
+			get: function () {
+
+				return this.uniforms[ 'radius' ].value;
+
+			},
+			set: function ( value ) {
+
+				this.uniforms[ 'radius' ].value = value;
+
+			}
 		},
 
 		onlyAO: {
-			get: function() { return this.uniforms[ 'onlyAO' ].value; },
-			set: function( value ) { this.uniforms[ 'onlyAO' ].value = value; }
+			get: function () {
+
+				return this.uniforms[ 'onlyAO' ].value;
+
+			},
+			set: function ( value ) {
+
+				this.uniforms[ 'onlyAO' ].value = value;
+
+			}
 		},
 
 		aoClamp: {
-			get: function() { return this.uniforms[ 'aoClamp' ].value; },
-			set: function( value ) { this.uniforms[ 'aoClamp' ].value = value; }
+			get: function () {
+
+				return this.uniforms[ 'aoClamp' ].value;
+
+			},
+			set: function ( value ) {
+
+				this.uniforms[ 'aoClamp' ].value = value;
+
+			}
 		},
 
 		lumInfluence: {
-			get: function() { return this.uniforms[ 'lumInfluence' ].value; },
-			set: function( value ) { this.uniforms[ 'lumInfluence' ].value = value; }
+			get: function () {
+
+				return this.uniforms[ 'lumInfluence' ].value;
+
+			},
+			set: function ( value ) {
+
+				this.uniforms[ 'lumInfluence' ].value = value;
+
+			}
 		},
 
-	});
-}
+	} );
+
+};
 
 THREE.SSAOPass.prototype = Object.create( THREE.ShaderPass.prototype );
 
 /**
  * Render using this pass.
- * 
+ *
  * @method render
  * @param {WebGLRenderer} renderer
  * @param {WebGLRenderTarget} writeBuffer Buffer to write output.
@@ -109,13 +142,13 @@ THREE.SSAOPass.prototype = Object.create( THREE.ShaderPass.prototype );
  * @param {Number} delta Delta time in milliseconds.
  * @param {Boolean} maskActive Not used in this pass.
  */
-THREE.SSAOPass.prototype.render = function( renderer, writeBuffer, readBuffer, delta, maskActive ) {
+THREE.SSAOPass.prototype.render = function ( renderer, writeBuffer, readBuffer, delta, maskActive ) {
 
 	//Render depth into depthRenderTarget
 	this.scene2.overrideMaterial = this.depthMaterial;
-	
+
 	renderer.render( this.scene2, this.camera2, this.depthRenderTarget, true );
-	
+
 	this.scene2.overrideMaterial = null;
 
 
@@ -130,8 +163,8 @@ THREE.SSAOPass.prototype.render = function( renderer, writeBuffer, readBuffer, d
  * @method setScene
  * @param {Scene} scene
  */
-THREE.SSAOPass.prototype.setScene = function(scene) {
-	
+THREE.SSAOPass.prototype.setScene = function ( scene ) {
+
 	this.scene2 = scene;
 
 };
@@ -142,7 +175,7 @@ THREE.SSAOPass.prototype.setScene = function(scene) {
  * @method setCamera
  * @param {Camera} camera
  */
-THREE.SSAOPass.prototype.setCamera = function( camera ) {
+THREE.SSAOPass.prototype.setCamera = function ( camera ) {
 
 	this.camera2 = camera;
 
@@ -153,12 +186,12 @@ THREE.SSAOPass.prototype.setCamera = function( camera ) {
 
 /**
  * Set resolution of this render pass.
- * 
+ *
  * @method setSize
  * @param {Number} width
  * @param {Number} height
  */
-THREE.SSAOPass.prototype.setSize = function( width, height ) {
+THREE.SSAOPass.prototype.setSize = function ( width, height ) {
 
 	this.width = width;
 	this.height = height;

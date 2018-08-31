@@ -2430,11 +2430,13 @@ THREE.SEA3D.prototype.readCubeMapURL = function ( sea ) {
 				var pmremCubeUVPacker = new THREE.PMREMCubeUVPacker( pmremGenerator.cubeLods );
 				pmremCubeUVPacker.update( this.config.renderer );
 
-				texture.dispose();
-
 				this.objects[ "cmap/" + sea.name ] = sea.tag = pmremCubeUVPacker.CubeUVRenderTarget.texture;
 
 				this.file.resume = true;
+
+				texture.dispose();
+				pmremGenerator.dispose();
+				pmremCubeUVPacker.dispose();
 
 			}
 

@@ -233,7 +233,7 @@ THREE.MMDAnimationHelper = ( function () {
 
 			if ( params.ik !== false ) {
 
-				this._createCCDIKSolver( mesh ).update( params.saveOriginalBonesBeforeIK );  // this param is experimental
+				this._createCCDIKSolver( mesh ).update( params.saveOriginalBonesBeforeIK ); // this param is experimental
 
 			}
 
@@ -336,7 +336,7 @@ THREE.MMDAnimationHelper = ( function () {
 
 			if ( params.animation !== undefined ) {
 
-				this._setupCameraAnimation( camera, params.animation )
+				this._setupCameraAnimation( camera, params.animation );
 
 			}
 
@@ -680,7 +680,7 @@ THREE.MMDAnimationHelper = ( function () {
 
 						objects.set( clip, {
 							duration: clip.duration
-						} )
+						} );
 
 					}
 
@@ -704,7 +704,7 @@ THREE.MMDAnimationHelper = ( function () {
 
 							objects.set( clip, {
 								duration: clip.duration
-							} )
+							} );
 
 						}
 

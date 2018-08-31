@@ -87,7 +87,6 @@ THREE.MMDLoader = ( function () {
 		 */
 		load: function ( url, onLoad, onProgress, onError ) {
 
-			var parser = this._getParser();
 			var builder = this.meshBuilder.setCrossOrigin( this.crossOrigin );
 
 			var texturePath = THREE.LoaderUtils.extractUrlBase( url );
@@ -228,7 +227,6 @@ THREE.MMDLoader = ( function () {
 			var vmds = [];
 			var vmdNum = urls.length;
 
-			var scope = this;
 			var parser = this._getParser();
 
 			this.loader
@@ -258,9 +256,7 @@ THREE.MMDLoader = ( function () {
 		 * @param {function} onProgress
 		 * @param {function} onError
 		 */
-		loadVPD: function ( url, isUnicode, onLoad, onProgress, onError, params ) {
-
-			params = params || {};
+		loadVPD: function ( url, isUnicode, onLoad, onProgress, onError ) {
 
 			var parser = this._getParser();
 
@@ -365,9 +361,9 @@ THREE.MMDLoader = ( function () {
 
 			var geometry = this.geometryBuilder.build( data );
 			var material = this.materialBuilder
-					.setCrossOrigin( this.crossOrigin )
-					.setTexturePath( texturePath )
-					.build( data, geometry, onProgress, onError );
+				.setCrossOrigin( this.crossOrigin )
+				.setTexturePath( texturePath )
+				.build( data, geometry, onProgress, onError );
 
 			var mesh = new THREE.SkinnedMesh( geometry, material );
 
@@ -1093,7 +1089,7 @@ THREE.MMDLoader = ( function () {
 
 					// parameters for OutlineEffect
 					params.userData.outlineParameters = {
-						thickness: material.edgeSize / 300,  // TODO: better calculation?
+						thickness: material.edgeSize / 300, // TODO: better calculation?
 						color: material.edgeColor.slice( 0, 3 ),
 						alpha: material.edgeColor[ 3 ],
 						visible: ( material.flag & 0x10 ) !== 0 && material.edgeSize > 0.0
@@ -1451,7 +1447,7 @@ THREE.MMDLoader = ( function () {
 				array.push( interpolation[ index + 4 ] / 127 ); // y1
 				array.push( interpolation[ index + 12 ] / 127 ); // y2
 
-			};
+			}
 
 			var tracks = [];
 
@@ -1605,7 +1601,7 @@ THREE.MMDLoader = ( function () {
 				array.push( interpolation[ index * 4 + 2 ] / 127 ); // y1
 				array.push( interpolation[ index * 4 + 3 ] / 127 ); // y2
 
-			};
+			}
 
 			var tracks = [];
 

@@ -144,7 +144,7 @@ THREE.EXRLoader.prototype._parser = function ( buffer ) {
 
 		for ( var i = 0; i < HUF_DECSIZE; i ++ ) {
 
-			hdec[ i ] = {}
+			hdec[ i ] = {};
 			hdec[ i ].len = 0;
 			hdec[ i ].lit = 0;
 			hdec[ i ].p = null;
@@ -704,7 +704,7 @@ THREE.EXRLoader.prototype._parser = function ( buffer ) {
 
 		if ( maxNonZero >= BITMAP_SIZE ) {
 
-			throw 'Something is wrong with PIZ_COMPRESSION BITMAP_SIZE'
+			throw 'Something is wrong with PIZ_COMPRESSION BITMAP_SIZE';
 
 		}
 
@@ -727,7 +727,7 @@ THREE.EXRLoader.prototype._parser = function ( buffer ) {
 
 		var pizChannelData = new Array( num_channels );
 
-		var outBufferEnd = 0
+		var outBufferEnd = 0;
 
 		for ( var i = 0; i < num_channels; i ++ ) {
 

@@ -54,7 +54,7 @@ THREE.MD2Character = function () {
 
 		var loader = new THREE.MD2Loader();
 
-		loader.load( config.baseUrl + config.body, function( geo ) {
+		loader.load( config.baseUrl + config.body, function ( geo ) {
 
 			geo.computeBoundingBox();
 			scope.root.position.y = - scope.scale * geo.boundingBox.min.y;
@@ -67,7 +67,7 @@ THREE.MD2Character = function () {
 			scope.meshBody = mesh;
 
 			scope.meshBody.clipOffset = 0;
-			scope.activeAnimationClipName = mesh.geometry.animations[0].name;
+			scope.activeAnimationClipName = mesh.geometry.animations[ 0 ].name;
 
 			scope.mixer = new THREE.AnimationMixer( mesh );
 
@@ -79,7 +79,7 @@ THREE.MD2Character = function () {
 
 		var generateCallback = function ( index, name ) {
 
-			return function( geo ) {
+			return function ( geo ) {
 
 				var mesh = createPart( geo, scope.skinsWeapon[ index ] );
 				mesh.scale.set( scope.scale, scope.scale, scope.scale );
@@ -94,7 +94,7 @@ THREE.MD2Character = function () {
 
 				checkLoadingComplete();
 
-			}
+			};
 
 		};
 
@@ -108,11 +108,14 @@ THREE.MD2Character = function () {
 
 	this.setPlaybackRate = function ( rate ) {
 
-		if( rate !== 0 ) {
+		if ( rate !== 0 ) {
+
 			this.mixer.timeScale = 1 / rate;
-		}
-		else {
+
+		} else {
+
 			this.mixer.timeScale = 0;
+
 		}
 
 	};
@@ -133,7 +136,7 @@ THREE.MD2Character = function () {
 
 	};
 
-	this.setSkin = function( index ) {
+	this.setSkin = function ( index ) {
 
 		if ( this.meshBody && this.meshBody.material.wireframe === false ) {
 
@@ -164,13 +167,16 @@ THREE.MD2Character = function () {
 
 		if ( this.meshBody ) {
 
-			if( this.meshBody.activeAction ) {
+			if ( this.meshBody.activeAction ) {
+
 				this.meshBody.activeAction.stop();
 				this.meshBody.activeAction = null;
+
 			}
 
 			var action = this.mixer.clipAction( clipName, this.meshBody );
-			if( action ) {
+
+			if ( action ) {
 
 				this.meshBody.activeAction = action.play();
 
@@ -184,35 +190,34 @@ THREE.MD2Character = function () {
 
 	};
 
-	this.syncWeaponAnimation = function() {
+	this.syncWeaponAnimation = function () {
 
 		var clipName = scope.activeClipName;
 
 		if ( scope.meshWeapon ) {
 
-			if( this.meshWeapon.activeAction ) {
+			if ( this.meshWeapon.activeAction ) {
+
 				this.meshWeapon.activeAction.stop();
 				this.meshWeapon.activeAction = null;
+
 			}
 
-			var geometry = this.meshWeapon.geometry,
-				animations = geometry.animations;
-
 			var action = this.mixer.clipAction( clipName, this.meshWeapon );
-			if( action ) {
 
-				this.meshWeapon.activeAction =
-						action.syncWith( this.meshBody.activeAction ).play();
+			if ( action ) {
+
+				this.meshWeapon.activeAction = action.syncWith( this.meshBody.activeAction ).play();
 
 			}
 
 		}
 
-	}
+	};
 
 	this.update = function ( delta ) {
 
-		if( this.mixer ) this.mixer.update( delta );
+		if ( this.mixer ) this.mixer.update( delta );
 
 	};
 

@@ -28,6 +28,7 @@
     "loaders/ctm/lzma.js",
     "loaders/sea3d/SEA3D.js",
     "loaders/sea3d/SEA3DDeflate.js",
+    "loaders/sea3d/SEA3DDraco.js",
     "loaders/sea3d/SEA3DLZMA.js",
     "loaders/sea3d/o3dgc/SEA3DGC.js",
     "loaders/sea3d/physics/**"

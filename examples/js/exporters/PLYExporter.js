@@ -85,7 +85,6 @@ THREE.PLYExporter.prototype = {
 		var includeNormals = false;
 		var includeColors = false;
 		var includeUVs = false;
-		var includeIndices = true;
 
 		// count the vertices, check which properties are used,
 		// and cache the BufferGeometry
@@ -135,10 +134,10 @@ THREE.PLYExporter.prototype = {
 
 		} );
 
+		var includeIndices = excludeAttributes.indexOf( 'index' ) === - 1;
 		includeNormals = includeNormals && excludeAttributes.indexOf( 'normal' ) === - 1;
 		includeColors = includeColors && excludeAttributes.indexOf( 'color' ) === - 1;
 		includeUVs = includeUVs && excludeAttributes.indexOf( 'uv' ) === - 1;
-		includeIndices = includeIndices && excludeAttributes.indexOf( 'index' ) === - 1;
 
 
 		if ( includeIndices && faceCount !== Math.floor( faceCount ) ) {
