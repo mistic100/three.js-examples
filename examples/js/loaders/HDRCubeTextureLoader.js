@@ -121,6 +121,7 @@ THREE.HDRCubeTextureLoader.prototype.load = function ( type, urls, onLoad, onPro
 	function loadHDRData( i, onLoad, onProgress, onError ) {
 
 		var loader = new THREE.FileLoader( scope.manager );
+		loader.setPath( scope.path );
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( urls[ i ], function ( buffer ) {
 
@@ -194,6 +195,13 @@ THREE.HDRCubeTextureLoader.prototype.load = function ( type, urls, onLoad, onPro
 	}
 
 	return texture;
+
+};
+
+THREE.HDRCubeTextureLoader.prototype.setPath = function ( value ) {
+
+	this.path = value;
+	return this;
 
 };
 }));

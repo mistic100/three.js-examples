@@ -34,20 +34,22 @@ THREE.MTLLoader.prototype = {
 	 * @param {Function} [onProgress] - Callback for download progress.
 	 * @param {Function} [onError] - Callback for download errors.
 	 *
-	 * @see setPath setTexturePath
+	 * @see setPath setResourcePath
 	 *
 	 * @note In order for relative texture references to resolve correctly
-	 * you must call setPath and/or setTexturePath explicitly prior to load.
+	 * you must call setResourcePath() explicitly prior to load.
 	 */
 	load: function ( url, onLoad, onProgress, onError ) {
 
 		var scope = this;
 
+		var path = ( this.path === undefined ) ? THREE.LoaderUtils.extractUrlBase( url ) : this.path;
+
 		var loader = new THREE.FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.load( url, function ( text ) {
 
-			onLoad( scope.parse( text ) );
+			onLoad( scope.parse( text, path ) );
 
 		}, onProgress, onError );
 
@@ -57,7 +59,7 @@ THREE.MTLLoader.prototype = {
 	 * Set base path for resolving references.
 	 * If set this path will be prepended to each loaded and found reference.
 	 *
-	 * @see setTexturePath
+	 * @see setResourcePath
 	 * @param {String} path
 	 * @return {THREE.MTLLoader}
 	 *
@@ -73,9 +75,7 @@ THREE.MTLLoader.prototype = {
 	},
 
 	/**
-	 * Set base path for resolving texture references.
-	 * If set this path will be prepended found texture reference.
-	 * If not set and setPath is, it will be used as texture base path.
+	 * Set base path for additional resources like textures.
 	 *
 	 * @see setPath
 	 * @param {String} path
@@ -83,21 +83,20 @@ THREE.MTLLoader.prototype = {
 	 *
 	 * @example
 	 *     mtlLoader.setPath( 'assets/obj/' );
-	 *     mtlLoader.setTexturePath( 'assets/textures/' );
+	 *     mtlLoader.setResourcePath( 'assets/textures/' );
 	 *     mtlLoader.load( 'my.mtl', ... );
 	 */
-	setTexturePath: function ( path ) {
+	setResourcePath: function ( path ) {
 
-		this.texturePath = path;
+		this.resourcePath = path;
 		return this;
 
 	},
 
-	setBaseUrl: function ( path ) {
+	setTexturePath: function ( path ) {
 
-		console.warn( 'THREE.MTLLoader: .setBaseUrl() is deprecated. Use .setTexturePath( path ) for texture path or .setPath( path ) for general base path instead.' );
-
-		return this.setTexturePath( path );
+		console.warn( 'THREE.MTLLoader: .setTexturePath() has been renamed to .setResourcePath().' );
+		return this.setResourcePath( path );
 
 	},
 
@@ -121,12 +120,12 @@ THREE.MTLLoader.prototype = {
 	 * @param {String} text - Content of MTL file
 	 * @return {THREE.MTLLoader.MaterialCreator}
 	 *
-	 * @see setPath setTexturePath
+	 * @see setPath setResourcePath
 	 *
 	 * @note In order for relative texture references to resolve correctly
-	 * you must call setPath and/or setTexturePath explicitly prior to parse.
+	 * you must call setResourcePath() explicitly prior to parse.
 	 */
-	parse: function ( text ) {
+	parse: function ( text, path ) {
 
 		var lines = text.split( '\n' );
 		var info = {};
@@ -160,7 +159,7 @@ THREE.MTLLoader.prototype = {
 				info = { name: value };
 				materialsInfo[ value ] = info;
 
-			} else if ( info ) {
+			} else {
 
 				if ( key === 'ka' || key === 'kd' || key === 'ks' ) {
 
@@ -177,7 +176,7 @@ THREE.MTLLoader.prototype = {
 
 		}
 
-		var materialCreator = new THREE.MTLLoader.MaterialCreator( this.texturePath || this.path, this.materialOptions );
+		var materialCreator = new THREE.MTLLoader.MaterialCreator( this.resourcePath || path, this.materialOptions );
 		materialCreator.setCrossOrigin( this.crossOrigin );
 		materialCreator.setManager( this.manager );
 		materialCreator.setMaterials( materialsInfo );
@@ -454,6 +453,15 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					// Bump texture map
 
 					setMapForType( "bumpMap", value );
+
+					break;
+
+				case 'map_d':
+
+					// Alpha map
+
+					setMapForType( "alphaMap", value );
+					params.transparent = true;
 
 					break;
 

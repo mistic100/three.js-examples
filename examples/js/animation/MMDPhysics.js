@@ -59,7 +59,7 @@ THREE.MMDPhysics = ( function () {
 		this.maxStepNum = ( params.maxStepNum !== undefined ) ? params.maxStepNum : 3;
 		this.gravity = new THREE.Vector3( 0, - 9.8 * 10, 0 );
 
-		if ( params.gravity !== undefined ) this.gravity.copy( gravity );
+		if ( params.gravity !== undefined ) this.gravity.copy( params.gravity );
 
 		this.world = params.world !== undefined ? params.world : null; // experimental
 
@@ -128,7 +128,7 @@ THREE.MMDPhysics = ( function () {
 
 			if ( isNonDefaultScale ) {
 
-				if ( parent !== null ) parent.parent = parent;
+				if ( parent !== null ) mesh.parent = parent;
 
 				mesh.scale.copy( scale );
 

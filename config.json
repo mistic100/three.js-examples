@@ -7,7 +7,8 @@
     "ImprovedNoise.js": ["ImprovedNoise"],
     "PRNG.js": ["PRNG"],
     "RollerCoaster.js": ["RollerCoasterGeometry", "RollerCoasterLiftersGeometry", "RollerCoasterShadowGeometry", "SkyGeometry", "TreesGeometry"],
-    "SimplexNoise.js": ["SimplexNoise"]
+    "SimplexNoise.js": ["SimplexNoise"],
+    "WebGL.js": ["WEBGL"]
   },
   "noUMD": [
     "nodes/**/*.js",
@@ -15,8 +16,7 @@
     "loaders/XLoader.js",
     "renderers/RaytracingWorker.js",
     "workers/OffscreenCanvas.js",
-    "Cloth.js",
-    "Detector.js"
+    "Cloth.js"
   ],
   "ignore": [
     "crossfade/**",
