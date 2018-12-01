@@ -2,12 +2,14 @@
   "globals": {
     "geometries/hilbert2D.js": ["hilbert2D"],
     "geometries/hilbert3D.js": ["hilbert3D"],
-    "vr/WebVR.js": ["WEBVR"],
     "GPUComputationRenderer.js": ["GPUComputationRenderer"],
     "ImprovedNoise.js": ["ImprovedNoise"],
+    "interactive/SelectionBox.js": ["SelectionBox"],
+    "interactive/SelectionHelper.js": ["SelectionHelper"],
     "PRNG.js": ["PRNG"],
     "RollerCoaster.js": ["RollerCoasterGeometry", "RollerCoasterLiftersGeometry", "RollerCoasterShadowGeometry", "SkyGeometry", "TreesGeometry"],
     "SimplexNoise.js": ["SimplexNoise"],
+    "vr/WebVR.js": ["WEBVR"],
     "WebGL.js": ["WEBGL"]
   },
   "noUMD": [

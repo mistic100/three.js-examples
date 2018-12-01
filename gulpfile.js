@@ -61,11 +61,13 @@ gulp.task('build-umd', () => {
 `;
         }))
         .pipe(insert.append(file => {
-            return _(config.globals)
+            const globals = _(config.globals)
                 .filter((vars, path) => normalize(file.path).includes(path))
                 .flatten()
                 .map(global => `THREE.${global} = ${global};`)
                 .join(`\n`);
+
+            return globals ? `\n${globals}\n` : '';
         }))
         .pipe(insert.append(() => {
             return `}));`;

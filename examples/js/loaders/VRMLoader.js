@@ -66,6 +66,13 @@ THREE.VRMLoader = ( function () {
 
 		},
 
+		setResourcePath: function ( value ) {
+
+			this.glTFLoader.setResourcePath( value );
+			return this;
+
+		},
+
 		setDRACOLoader: function ( dracoLoader ) {
 
 			this.glTFLoader.setDRACOLoader( dracoLoader );

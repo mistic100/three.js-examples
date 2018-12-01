@@ -81,4 +81,6 @@ var ImprovedNoise = function () {
 		}
 	}
 };
-THREE.ImprovedNoise = ImprovedNoise;}));
+
+THREE.ImprovedNoise = ImprovedNoise;
+}));

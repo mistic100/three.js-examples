@@ -104,4 +104,6 @@ var WEBGL = {
 	}
 
 };
-THREE.WEBGL = WEBGL;}));
+
+THREE.WEBGL = WEBGL;
+}));

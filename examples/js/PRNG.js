@@ -33,4 +33,6 @@ var PRNG = function () {
 	};
 
 };
-THREE.PRNG = PRNG;}));
+
+THREE.PRNG = PRNG;
+}));

@@ -334,7 +334,7 @@ THREE.Projector = function () {
 
 				_face.material = material;
 
-				if ( material.vertexColors === THREE.FaceColors ) {
+				if ( material.vertexColors === THREE.FaceColors ||  material.vertexColors === THREE.VertexColors ) {
 
 					_face.color.fromArray( colors, a * 3 );
 
