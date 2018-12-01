@@ -31,7 +31,9 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 	var _mouse = new THREE.Vector2();
 	var _offset = new THREE.Vector3();
 	var _intersection = new THREE.Vector3();
-
+	var _worldPosition = new THREE.Vector3();
+	var _inverseMatrix = new THREE.Matrix4();
+	
 	var _selected = null, _hovered = null;
 
 	//
@@ -83,7 +85,7 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 
 			if ( _raycaster.ray.intersectPlane( _plane, _intersection ) ) {
 
-				_selected.position.copy( _intersection.sub( _offset ) );
+				_selected.position.copy( _intersection.sub( _offset ).applyMatrix4( _inverseMatrix ) );
 
 			}
 
@@ -101,7 +103,7 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 
 			var object = intersects[ 0 ].object;
 
-			_plane.setFromNormalAndCoplanarPoint( _camera.getWorldDirection( _plane.normal ), object.position );
+			_plane.setFromNormalAndCoplanarPoint( _camera.getWorldDirection( _plane.normal ), _worldPosition.setFromMatrixPosition( object.matrixWorld ) );
 
 			if ( _hovered !== object ) {
 
@@ -141,7 +143,8 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 
 			if ( _raycaster.ray.intersectPlane( _plane, _intersection ) ) {
 
-				_offset.copy( _intersection ).sub( _selected.position );
+				_inverseMatrix.getInverse( _selected.parent.matrixWorld );
+				_offset.copy( _intersection ).sub( _worldPosition.setFromMatrixPosition( _selected.matrixWorld ) );
 
 			}
 
@@ -186,7 +189,7 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 
 			if ( _raycaster.ray.intersectPlane( _plane, _intersection ) ) {
 
-				_selected.position.copy( _intersection.sub( _offset ) );
+				_selected.position.copy( _intersection.sub( _offset ).applyMatrix4( _inverseMatrix ) );
 
 			}
 
@@ -216,11 +219,12 @@ THREE.DragControls = function ( _objects, _camera, _domElement ) {
 
 			_selected = intersects[ 0 ].object;
 
-			_plane.setFromNormalAndCoplanarPoint( _camera.getWorldDirection( _plane.normal ), _selected.position );
+			_plane.setFromNormalAndCoplanarPoint( _camera.getWorldDirection( _plane.normal ), _worldPosition.setFromMatrixPosition( _selected.matrixWorld ) );
 
 			if ( _raycaster.ray.intersectPlane( _plane, _intersection ) ) {
 
-				_offset.copy( _intersection ).sub( _selected.position );
+				_inverseMatrix.getInverse( _selected.parent.matrixWorld );
+				_offset.copy( _intersection ).sub( _worldPosition.setFromMatrixPosition( _selected.matrixWorld ) );
 
 			}
 

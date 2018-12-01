@@ -17,7 +17,6 @@
     "loaders/ctm/CTMWorker.js",
     "loaders/XLoader.js",
     "renderers/RaytracingWorker.js",
-    "workers/OffscreenCanvas.js",
     "Cloth.js"
   ],
   "ignore": [
@@ -33,6 +32,7 @@
     "loaders/sea3d/SEA3DDraco.js",
     "loaders/sea3d/SEA3DLZMA.js",
     "loaders/sea3d/o3dgc/SEA3DGC.js",
-    "loaders/sea3d/physics/**"
+    "loaders/sea3d/physics/**",
+    "offscreen/**"
   ]
 }
