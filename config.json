@@ -33,6 +33,7 @@
     "loaders/sea3d/SEA3DLZMA.js",
     "loaders/sea3d/o3dgc/SEA3DGC.js",
     "loaders/sea3d/physics/**",
-    "offscreen/**"
+    "offscreen/**",
+    "utils/ldraw/**"
   ]
 }

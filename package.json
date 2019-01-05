@@ -1,6 +1,6 @@
 {
   "name": "three.js-examples",
-  "version": "0.99.0",
+  "version": "0.100.0",
   "description": "JavaScript files from Three.js examples",
   "author": "mrdoob",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "start": "gulp"
   },
   "dependencies": {
-    "three": "0.99.0"
+    "three": "0.100.0"
   },
   "devDependencies": {
     "gulp": "^4.0.0",
