@@ -1,6 +1,8 @@
 # three.js-examples for Bower
 
-[![Bower version](https://img.shields.io/bower/v/three.js-examples.svg?style=flat-square)](https://github.com/mistic100/three.js-examples)
+**DISCONTINUED** No more version of this package will be published.
+
+---
 
 A Bower package only containing the JavaScript files of the [Three.js](https://github.com/mrdoob/three.js) examples.
 
